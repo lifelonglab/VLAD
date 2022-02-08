@@ -1,5 +1,7 @@
 data
 results
+results_analysis
+out
 
 .idea
 __pycache__

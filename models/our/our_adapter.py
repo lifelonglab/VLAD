@@ -7,11 +7,11 @@ from models.our.models.vae import VAE
 
 class OurModelAdapter(Model):
     def __init__(self):
-        # self.model = VAE()
-        self.model = AE()
+        self.model = VAE()
+        # self.model = AE()
 
     def name(self):
-        return f'our_model_base_ae'
+        return f'our_model_base_vae'
 
     def learn(self, data) -> None:
         self.model.learn(data)

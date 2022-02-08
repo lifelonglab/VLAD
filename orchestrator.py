@@ -5,25 +5,29 @@ from models.classic.lof import LocalOutlierFactorAdapter
 from models.classic.oc_svm import OneClassSVMAdapter
 from models.modern.copod_adapter import COPODAdapter
 from models.classic.isolation_forest import IsolationForestAdapter
+from models.our.our_adapter import OurModelAdapter
 from models.strategies.ftl_wrapper import FirstTaskLearnerWrapper
+from models.strategies.incremental_batch_wrapper import IncrementalBatchLearnerWrapper
 from models.strategies.incremental_task_wrapper import IncrementalTaskLearnerWrapper
 from models.strategies.know_it_all_wrapper import KnowItAllLearnerWrapper
 from models.strategies.stl_wrapper import SingleTaskLearnerWrapper
 from models.modern.suod_adapter import SUODAdapter
 
-adfa_data_reader = lambda: AdfaDataReader('data_with_attacks/Adduser_k_5_rate_10_iter_1.csv',
-                                          'data_with_attacks/adfa_ld_attacks/Adduser/k_5/rate_10/Adduser_k_5_rate_10')
-smd_data_reader = lambda: SmdDataReader()
+adfa_data_reader = lambda: AdfaDataReader('data/adfa/Adduser_k_5_rate_10_iter_1.csv',
+                                          'data/adfa/Adduser_k_5_rate_10')
+# smd_data_reader = lambda: SmdDataReader()
 
 data_readers = [adfa_data_reader]
 models_creators = [
-    lambda: IsolationForestAdapter(), lambda: LocalOutlierFactorAdapter(), lambda: OneClassSVMAdapter(),
+    # lambda: IsolationForestAdapter(), lambda: LocalOutlierFactorAdapter(), lambda: OneClassSVMAdapter(),
     # lambda: COPODAdapter(), lambda: SUODAdapter()
+    lambda: OurModelAdapter()
 ]
 strategies = [
     lambda model_fn, _: SingleTaskLearnerWrapper(model_fn),
     lambda model_fn, _: FirstTaskLearnerWrapper(model_fn),
     lambda model_fn, _: IncrementalTaskLearnerWrapper(model_fn),
+    lambda model_fn, _: IncrementalBatchLearnerWrapper(model_fn),
     lambda model_fn, tasks_fn: KnowItAllLearnerWrapper(model_fn, learning_tasks=tasks_fn())
 ]
 
