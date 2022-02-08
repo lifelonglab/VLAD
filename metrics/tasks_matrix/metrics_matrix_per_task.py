@@ -1,5 +1,6 @@
 from collections import defaultdict
-from typing import Literal, TypedDict, List, Dict, get_args
+from typing import List, Dict
+from typing_extensions import Literal, TypedDict
 
 import numpy as np
 from sklearn.metrics import accuracy_score
@@ -8,7 +9,8 @@ from metrics.metric_utils import prec_rec_f1
 from metrics.tasks_matrix.predictions_collector import CollectedResults, PredictionsDict
 
 BaseMetric = Literal['precision', 'recall', 'f1', 'accuracy']
-base_metrics: List[BaseMetric] = [m for m in get_args(BaseMetric)]
+base_metrics: List[BaseMetric] = ['precision', 'recall', 'f1', 'accuracy']
+
 
 class BaseMetricsResults(TypedDict):
     precision: float

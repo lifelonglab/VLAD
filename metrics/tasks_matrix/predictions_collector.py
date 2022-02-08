@@ -1,5 +1,6 @@
 from collections import defaultdict
-from typing import List, Dict, TypedDict
+from typing import List, Dict
+from typing_extensions import TypedDict
 
 import numpy as np
 
