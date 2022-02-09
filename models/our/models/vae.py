@@ -66,7 +66,6 @@ class VAE:
         epsilon = K.random_normal(shape=(batch, dim))
         return z_mean + K.exp(0.5 * z_log_var) * epsilon
 
-
     def learn(self, data):
         self.vae_model.fit(data, data,
                            shuffle=False,

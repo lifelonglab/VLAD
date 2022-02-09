@@ -7,6 +7,7 @@ import numpy as np
 from data_readers.data_reader import DataReader
 from metrics.tasks_matrix.predictions_collector import CollectedResults
 from models.model import Model
+from strategies.strategy import Strategy
 
 
 class NumpyEncoder(json.JSONEncoder):
@@ -16,10 +17,12 @@ class NumpyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def save_results(model: Model, data_reader: DataReader, processed_results: Dict, collected_results: CollectedResults,
+def save_results(model: Strategy, data_reader: DataReader, processed_results: Dict, collected_results: CollectedResults,
                  times: Dict):
     metadata = {
         'name': model.name(),
+        'strategy': model.strategy_name(),
+        'model': model.model_name(),
         'dataset': data_reader.dataset_id(),
         'tasks': [t.name for t in data_reader.iterate_tasks()],
         'parameters': model.parameters()

@@ -1,17 +1,16 @@
 from data_readers.adfa_data_reader import AdfaDataReader
-from data_readers.smd_data_reader import SmdDataReader
 from experiment import experiment
+from models.classic.isolation_forest import IsolationForestAdapter
 from models.classic.lof import LocalOutlierFactorAdapter
 from models.classic.oc_svm import OneClassSVMAdapter
 from models.modern.copod_adapter import COPODAdapter
-from models.classic.isolation_forest import IsolationForestAdapter
-from models.our.our_adapter import OurModelAdapter
-from models.strategies.ftl_wrapper import FirstTaskLearnerWrapper
-from models.strategies.incremental_batch_wrapper import IncrementalBatchLearnerWrapper
-from models.strategies.incremental_task_wrapper import IncrementalTaskLearnerWrapper
-from models.strategies.know_it_all_wrapper import KnowItAllLearnerWrapper
-from models.strategies.stl_wrapper import SingleTaskLearnerWrapper
 from models.modern.suod_adapter import SUODAdapter
+from models.our.our_adapter import OurModelAdapter
+from strategies.ftl_wrapper import FirstTaskLearnerWrapper
+from strategies.incremental_batch_wrapper import IncrementalBatchLearnerWrapper
+from strategies.incremental_task_wrapper import IncrementalTaskLearnerWrapper
+from strategies.know_it_all_wrapper import KnowItAllLearnerWrapper
+from strategies.stl_wrapper import SingleTaskLearnerWrapper
 
 adfa_data_reader = lambda: AdfaDataReader('data/adfa/Adduser_k_5_rate_10_iter_1.csv',
                                           'data/adfa/Adduser_k_5_rate_10')
@@ -19,9 +18,9 @@ adfa_data_reader = lambda: AdfaDataReader('data/adfa/Adduser_k_5_rate_10_iter_1.
 
 data_readers = [adfa_data_reader]
 models_creators = [
-    # lambda: IsolationForestAdapter(), lambda: LocalOutlierFactorAdapter(), lambda: OneClassSVMAdapter(),
-    # lambda: COPODAdapter(), lambda: SUODAdapter()
-    lambda: OurModelAdapter()
+    lambda: IsolationForestAdapter(), lambda: LocalOutlierFactorAdapter(), lambda: OneClassSVMAdapter(),
+    lambda: COPODAdapter(), lambda: SUODAdapter()
+    # lambda: OurModelAdapter()
 ]
 strategies = [
     lambda model_fn, _: SingleTaskLearnerWrapper(model_fn),

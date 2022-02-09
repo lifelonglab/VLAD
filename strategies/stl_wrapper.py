@@ -1,27 +1,28 @@
 from typing import Callable
 
 from models.model import Model
+from strategies.strategy import Strategy
 
 
-class SingleTaskLearnerWrapper(Model):
+class SingleTaskLearnerWrapper(Strategy):
     """
     SingleTaskLearnerWrapper is a wrapper for any model. It creates a new model every time it is supposed to learn
     new data.
     """
     def __init__(self, model_creation_fn: Callable[[], Model]):
         self.model_creation_fn = model_creation_fn
-        self.model = None
+        self._model = self.model_creation_fn()
 
     def learn(self, data) -> None:
-        self.model = self.model_creation_fn()
-        self.model.learn(data)
+        self._model = self.model_creation_fn()
+        self._model.learn(data)
 
     def predict(self, data, task_name=None):
-        return self.model.predict(data)
+        return self._model.predict(data)
 
-    def name(self):
-        return f'SingleTaskLearner-{self.model.name() if self.model is not None else ""}'
+    def model(self) -> Model:
+        return self._model
 
-    def parameters(self):
-        return self.model.parameters()
+    def strategy_name(self):
+        return 'SingleTaskLearner'
 

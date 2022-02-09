@@ -1,23 +1,24 @@
 from typing import Dict, Callable
 
 from models.model import Model
+from strategies.strategy import Strategy
 
 
-class IncrementalTaskLearnerWrapper(Model):
+class IncrementalTaskLearnerWrapper(Strategy):
     """
     IncrementalTaskLearnerWrapper is a wrapper for any model. It trains the same model on all incoming tasks, one at a time.
     """
     def __init__(self, model_creation_fn: Callable[[], Model]):
-        self.model = model_creation_fn()
-
-    def name(self):
-        return f'IncrementalTaskLearner-{self.model.name()}'
+        self._model = model_creation_fn()
 
     def learn(self, data) -> None:
-        self.model.learn(data)
+        self._model.learn(data)
 
     def predict(self, data, task_name=None):
-        return self.model.predict(data)
+        return self._model.predict(data)
 
-    def parameters(self) -> Dict:
-        return self.model.parameters()
+    def model(self) -> Model:
+        return self._model
+
+    def strategy_name(self):
+        return 'IncrementalTaskLearner'

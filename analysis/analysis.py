@@ -17,21 +17,27 @@ def _extract_for(global_results, metric, results_store):
 
 
 def process_global_to_csv(path: Path):
-    models = []
+    names = []
+    strategy = []
+    model_names = []
     results = defaultdict(list)
     for file in path.glob('*.json'):
         with open(file) as f:
             data = json.load(f)
 
-            model = data['metadata']['name']
-            models.append(model)
+            name = data['metadata']['name']
+            names.append(name)
+            strategy.append(data['metadata']['strategy'])
+            model_names.append(data['metadata']['model'])
 
             global_results = data['results']['global']
             for metric in base_metrics:
                 _extract_for(global_results, metric, results)
 
     df = pd.DataFrame()
-    df['model'] = models
+    df['model'] = names
+    df['strategy'] = strategy
+    df['model_name'] = model_names
     for key, values in results.items():
         df[key] = values
     Path('results_analysis').mkdir(exist_ok=True)
