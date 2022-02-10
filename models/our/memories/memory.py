@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Dict
 
+import numpy as np
+
 
 class Memory(ABC):
     @abstractmethod
@@ -12,7 +14,7 @@ class Memory(ABC):
         ...
 
     @abstractmethod
-    def get_replay(self):
+    def get_replay(self) -> np.ndarray:
         ...
 
     @abstractmethod

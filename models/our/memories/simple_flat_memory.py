@@ -1,6 +1,8 @@
 from itertools import chain
 from typing import Optional, Dict
 
+import numpy as np
+
 from models.our.memories.memory import Memory
 
 
@@ -15,8 +17,8 @@ class SimpleFlatMemory(Memory):
         else:
             self.memory[-1] = (self.memory[-1] + data)[-self.limit_per_task:]
 
-    def get_replay(self):
-        return list(chain(*self.memory))
+    def get_replay(self) -> np.ndarray:
+        return np.array(list(chain(*self.memory)))
 
     def name(self):
         return 'SimpleFlatMemory'

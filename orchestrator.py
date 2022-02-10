@@ -5,6 +5,11 @@ from models.classic.lof import LocalOutlierFactorAdapter
 from models.classic.oc_svm import OneClassSVMAdapter
 from models.modern.copod_adapter import COPODAdapter
 from models.modern.suod_adapter import SUODAdapter
+from models.our.cpds.always_new_cpd import AlwaysNewCPD
+from models.our.memories.simple_flat_memory import SimpleFlatMemory
+from models.our.models.ae import AE
+from models.our.models.vae import VAE
+from models.our.our import OurModel
 from models.our.our_adapter import OurModelAdapterBase
 from strategies.ftl_wrapper import FirstTaskLearnerWrapper
 from strategies.incremental_batch_wrapper import IncrementalBatchLearnerWrapper
@@ -18,9 +23,12 @@ adfa_data_reader = lambda: AdfaDataReader('data/adfa/Adduser_k_5_rate_10_iter_1.
 
 data_readers = [adfa_data_reader]
 models_creators = [
-    lambda: IsolationForestAdapter(), lambda: LocalOutlierFactorAdapter(), lambda: OneClassSVMAdapter(),
-    lambda: COPODAdapter(), lambda: SUODAdapter()
-    # lambda: OurModelAdapter()
+    # lambda: IsolationForestAdapter(), lambda: LocalOutlierFactorAdapter(), lambda: OneClassSVMAdapter(),
+    # lambda: COPODAdapter(), lambda: SUODAdapter()
+    # lambda: AE(), lambda: VAE(),
+    lambda: OurModel(AE(), cpd=AlwaysNewCPD(), memory=SimpleFlatMemory()),
+    lambda: OurModel(VAE(), cpd=AlwaysNewCPD(), memory=SimpleFlatMemory()),
+    lambda: OurModel(COPODAdapter(), cpd=AlwaysNewCPD(), memory=SimpleFlatMemory()),
 ]
 strategies = [
     lambda model_fn, _: SingleTaskLearnerWrapper(model_fn),
