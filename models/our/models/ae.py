@@ -1,12 +1,16 @@
+from typing import Dict
+
 import numpy as np
 from keras import Input, Model
 from keras.api.keras import optimizers
 from keras.layers import Dense
 
+from models.our.models.thresholds import max_threshold
 from models.our.utils import mse
+from models.model_base import ModelBase
 
 
-class AE:
+class AE(ModelBase):
     def __init__(self):
         self.params = {
             'input_size': 6,
@@ -21,10 +25,9 @@ class AE:
                        epochs=32,
                        batch_size=256)
         predictions = self.model.predict(data)
-        errors = mse(data, predictions)
-        self.threshold = np.percentile(errors, 99)
+        self.threshold = max_threshold(data, predictions)
 
-    def predict(self, data):
+    def predict(self, data, **kwargs):
         reconstruction = self.model.predict(data)
         errors = mse(data, reconstruction)
         return [1 if e > self.threshold else 0 for e in errors]
@@ -47,3 +50,10 @@ class AE:
         adam = optimizers.Adam(lr=self.params['l_rate'])
         autoencoder.compile(optimizer=adam, loss='mean_squared_error')
         return autoencoder
+
+    def name(self):
+        return 'AE_thr_max'
+
+    def parameters(self) -> Dict:
+        return self.params
+

@@ -2,10 +2,10 @@ from typing import Dict
 
 from sklearn.neighbors import LocalOutlierFactor
 
-from models.model import Model
+from models.model_base import ModelBase
 
 
-class LocalOutlierFactorAdapter(Model):
+class LocalOutlierFactorAdapter(ModelBase):
     def __init__(self):
         self.params = {
             'n_neighbors': 2,

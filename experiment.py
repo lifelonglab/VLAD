@@ -2,14 +2,14 @@ from data_readers.adfa_data_reader import AdfaDataReader
 from data_readers.data_reader import DataReader
 from metrics.tasks_matrix.predictions_collector import PredictionsCollector
 from metrics.time.time_measurement import TimeMeasurement
-from models.model import Model
-from models.our.our_adapter import OurModelAdapter
+from models.model_base import ModelBase
+from models.our.our_adapter import OurModelAdapterBase
 from strategies.stl_wrapper import SingleTaskLearnerWrapper
 from results import process_results
 from results_writer import save_results
 
 
-def experiment(data_reader: DataReader, model: Model):
+def experiment(data_reader: DataReader, model: ModelBase):
     # init
     results_collector = PredictionsCollector()
     time_measurement = TimeMeasurement()
@@ -45,5 +45,5 @@ if __name__ == '__main__':
                             'data/adfa/Adduser_k_5_rate_10')
     # reader = SmdDataReader()
     # model = FirstTaskLearnerWrapper(lambda: IsolationForestAdapter())
-    model = SingleTaskLearnerWrapper(lambda: OurModelAdapter())
+    model = SingleTaskLearnerWrapper(lambda: OurModelAdapterBase())
     experiment(reader, model)

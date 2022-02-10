@@ -1,10 +1,10 @@
 import numpy as np
 from sklearn.ensemble import IsolationForest
 
-from models.model import Model
+from models.model_base import ModelBase
 
 
-class IsolationForestAdapter(Model):
+class IsolationForestAdapter(ModelBase):
     def __init__(self):
         self.random_state = 0
         self.n_estimators = 25

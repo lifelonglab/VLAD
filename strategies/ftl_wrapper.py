@@ -1,6 +1,6 @@
 from typing import Callable
 
-from models.model import Model
+from models.model_base import ModelBase
 from strategies.strategy import Strategy
 
 
@@ -8,7 +8,7 @@ class FirstTaskLearnerWrapper(Strategy):
     """
     FirstTaskLearnerWrapper is a wrapper for any model. It trains model just once on the first task.
     """
-    def __init__(self, model_creation_fn: Callable[[], Model]):
+    def __init__(self, model_creation_fn: Callable[[], ModelBase]):
         self.model_creation_fn = model_creation_fn
         self._model = self.model_creation_fn()
         self.is_trained = False
@@ -26,7 +26,7 @@ class FirstTaskLearnerWrapper(Strategy):
             self.results[task_name] = self._model.predict(data)
         return self.results[task_name]
 
-    def model(self) -> Model:
+    def model(self) -> ModelBase:
         return self._model
 
     def strategy_name(self):

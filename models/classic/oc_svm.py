@@ -2,10 +2,10 @@ from typing import Dict
 
 from sklearn.svm import OneClassSVM
 
-from models.model import Model
+from models.model_base import ModelBase
 
 
-class OneClassSVMAdapter(Model):
+class OneClassSVMAdapter(ModelBase):
     def __init__(self):
         self.nu = 0.1
         self.kernel = 'rbf'

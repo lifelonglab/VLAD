@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import Dict
 
-from models.model import Model
+from models.model_base import ModelBase
 
 
-class Strategy(Model, ABC):
+class Strategy(ModelBase, ABC):
 
     @abstractmethod
-    def model(self) -> Model:
+    def model(self) -> ModelBase:
         ...
 
     @abstractmethod

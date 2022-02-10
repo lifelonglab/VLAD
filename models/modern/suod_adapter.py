@@ -2,10 +2,10 @@ from typing import Dict
 
 from pyod.models.suod import SUOD
 
-from models.model import Model
+from models.model_base import ModelBase
 
 
-class SUODAdapter(Model):
+class SUODAdapter(ModelBase):
     def __init__(self):
         self.suod = SUOD()
 

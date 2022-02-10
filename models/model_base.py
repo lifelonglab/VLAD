@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict
 
 
-class Model(ABC):
+class ModelBase(ABC):
     @abstractmethod
     def name(self):
         ...

@@ -2,7 +2,7 @@ from typing import Callable, List, Dict
 
 import numpy as np
 
-from models.model import Model
+from models.model_base import ModelBase
 from strategies.strategy import Strategy
 from task import Task
 
@@ -11,7 +11,7 @@ class KnowItAllLearnerWrapper(Strategy):
     """
     KnowItAllWrapper is a wrapper for any model. It trains model just once on the whole data from all tasks.
     """
-    def __init__(self, model_creation_fn: Callable[[], Model], learning_tasks: List[Task]):
+    def __init__(self, model_creation_fn: Callable[[], ModelBase], learning_tasks: List[Task]):
         self._model = model_creation_fn()
         self.learning_tasks = learning_tasks
         self.is_trained = False
@@ -30,7 +30,7 @@ class KnowItAllLearnerWrapper(Strategy):
             self.results[task_name] = self._model.predict(data)
         return self.results[task_name]
 
-    def model(self) -> Model:
+    def model(self) -> ModelBase:
         return self._model
 
     def strategy_name(self):

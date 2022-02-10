@@ -1,11 +1,11 @@
 from typing import Dict
 
-from models.model import Model
+from models.model_base import ModelBase
 from models.our.models.ae import AE
 from models.our.models.vae import VAE
 
 
-class OurModelAdapter(Model):
+class OurModelAdapterBase(ModelBase):
     def __init__(self):
         self.model = VAE()
         # self.model = AE()
@@ -17,7 +17,7 @@ class OurModelAdapter(Model):
         self.model.learn(data)
 
     def predict(self, data, task_name=None):
-        return self.model.predict(data)
+        return self.model.predict(data, )
 
     def parameters(self) -> Dict:
         return self.model.params

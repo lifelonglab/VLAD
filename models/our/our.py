@@ -1,8 +1,8 @@
-from typing import Dict
+from typing import Dict, List
 
-from models.model import Model
+from models.model_base import ModelBase
 from models.our.cpds.always_new_cpd import AlwaysNewCPD
-from models.our.cpds.cpd import CPD
+from models.our.cpds.cpd import CPD, ChangePoint
 from models.our.memories.simple_flat_memory import SimpleFlatMemory
 from models.our.models.ae import AE
 
@@ -11,36 +11,42 @@ from models.our.models.ae import AE
 # use data and replay - should we use whole data or limit it?
 #
 
-class OurModel(Model):
+class OurModelBase(ModelBase):
     def __init__(self):
         self.model = AE()
         self.cpd: CPD = AlwaysNewCPD()
         self.memory: SimpleFlatMemory = SimpleFlatMemory()
 
     def learn(self, data):
-        # check change points
         cps = self.cpd.detect_cp(data)
 
-        # if there any changepoints
         if len(cps) > 0:
-            # retrain with replay and new data
-            replay = self.memory.get_replay()
-            self.model.learn(replay + data)            # or if there are too many iterations without change
-            # update memory
-            for i, cp in enumerate(cps):
-                start_index = 0 if i == 0 else cps[i-1].index
-                end_index = cp.index
-                task_data = data[start_index:end_index]
-                self.memory.new_data(task_data, is_new=i != 0)
-        else:
-            self.memory.new_data(data, is_new=False)
-            # train each N iterations # forced sleep
+            self._retrain_model(data)
+
+        self._update_memory(cps, data)
+
+        # train each N iterations # forced sleep
 
     def predict(self, data, task_name=None):
-        return self.model.predict(data)
+        return self.model.predict(data, )
 
     def name(self):
-        return 'OurModel-ae-test'
+        return f'OurModel_{self.model.name()}_{self.cpd.name()}_{self.memory.name()}'
 
     def parameters(self) -> Dict:
-        return self.model.params
+        return {'model': self.model.params, 'cpd': self.cpd.params(), 'memory': self.memory.params()}
+
+    def _update_memory(self, cps: List[ChangePoint], data):
+        if len(cps) > 0:
+            for i, cp in enumerate(cps):
+                start_index = 0 if i == 0 else cps[i - 1].index
+                end_index = cp.index
+                task_data = data[start_index:end_index]
+                self.memory.new_data(task_data, is_new_dist=cp.is_new_dist, distribution=cp.distribution)
+        else:
+            self.memory.new_data(data, is_new_dist=False)
+
+    def _retrain_model(self, data):
+        replay = self.memory.get_replay()
+        retrain_data = replay + data
+        self.model.learn(retrain_data)  # or if there are too many iterations without change

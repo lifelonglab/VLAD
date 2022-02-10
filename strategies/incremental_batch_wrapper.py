@@ -1,12 +1,12 @@
 import math
 from typing import Dict, Callable
 
-from models.model import Model
+from models.model_base import ModelBase
 from strategies.strategy import Strategy
 
 
 class IncrementalBatchLearnerWrapper(Strategy):
-    def __init__(self, model_creation_fn: Callable[[], Model]):
+    def __init__(self, model_creation_fn: Callable[[], ModelBase]):
         self._model = model_creation_fn()
         self.batch_size = 1024
 
@@ -21,7 +21,7 @@ class IncrementalBatchLearnerWrapper(Strategy):
     def parameters(self) -> Dict:
         return {**self._model.parameters(), **{'batch_size': self.batch_size}}
 
-    def model(self) -> Model:
+    def model(self) -> ModelBase:
         return self._model
 
     def strategy_name(self):

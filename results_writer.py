@@ -6,7 +6,7 @@ import numpy as np
 
 from data_readers.data_reader import DataReader
 from metrics.tasks_matrix.predictions_collector import CollectedResults
-from models.model import Model
+from models.model_base import ModelBase
 from strategies.strategy import Strategy
 
 

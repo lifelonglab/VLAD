@@ -1,19 +1,24 @@
+from typing import Dict
+
 import numpy as np
 from keras import Input, Model
 from keras.api.keras import optimizers
 import keras.backend as K
 from keras.layers import Dense, Lambda
 
+from models.model_base import ModelBase
+from models.our.models.thresholds import max_threshold
 from models.our.utils import mse
 
 
-class VAE:
+class VAE(ModelBase):
     def __init__(self):
         self.params = {
             'input_shape': 6,
             'intermediate_dim': 3,
             'latent_dim': 2
         }
+        self.threshold = 0
         inputs, encoder = self._encoder()
         decoder = self._decoder()
         outputs = decoder(encoder(inputs))
@@ -72,11 +77,15 @@ class VAE:
                            epochs=32,
                            batch_size=256)
         predictions = self.vae_model.predict(data)
-        errors = mse(data, predictions)
-        self.threshold = np.percentile(errors, 99)
+        self.threshold = max_threshold(data, predictions)
 
-    def predict(self, data):
+    def predict(self, data, **kwargs):
         reconstruction = self.vae_model.predict(data)
         errors = mse(data, reconstruction)
         return [1 if e > self.threshold else 0 for e in errors]
 
+    def name(self):
+        return 'VAE_thr_100'
+
+    def parameters(self) -> Dict:
+        return self.params

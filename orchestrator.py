@@ -5,7 +5,7 @@ from models.classic.lof import LocalOutlierFactorAdapter
 from models.classic.oc_svm import OneClassSVMAdapter
 from models.modern.copod_adapter import COPODAdapter
 from models.modern.suod_adapter import SUODAdapter
-from models.our.our_adapter import OurModelAdapter
+from models.our.our_adapter import OurModelAdapterBase
 from strategies.ftl_wrapper import FirstTaskLearnerWrapper
 from strategies.incremental_batch_wrapper import IncrementalBatchLearnerWrapper
 from strategies.incremental_task_wrapper import IncrementalTaskLearnerWrapper

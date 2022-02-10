@@ -2,10 +2,10 @@ from typing import Dict
 
 from pyod.models.copod import COPOD
 
-from models.model import Model
+from models.model_base import ModelBase
 
 
-class COPODAdapter(Model):
+class COPODAdapter(ModelBase):
     def __init__(self):
         self.copod = COPOD()
 
