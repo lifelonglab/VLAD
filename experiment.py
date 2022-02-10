@@ -3,13 +3,18 @@ from data_readers.data_reader import DataReader
 from metrics.tasks_matrix.predictions_collector import PredictionsCollector
 from metrics.time.time_measurement import TimeMeasurement
 from models.model_base import ModelBase
+from models.our.cpds.lifewatch.lifewatch import LIFEWATCH
+from models.our.memories.simple_flat_memory import SimpleFlatMemory
+from models.our.models.vae import VAE
+from models.our.our import OurModel
 from models.our.our_adapter import OurModelAdapterBase
 from strategies.stl_wrapper import SingleTaskLearnerWrapper
 from results import process_results
 from results_writer import save_results
+from strategies.strategy import Strategy
 
 
-def experiment(data_reader: DataReader, model: ModelBase):
+def experiment(data_reader: DataReader, model: Strategy):
     # init
     results_collector = PredictionsCollector()
     time_measurement = TimeMeasurement()
@@ -45,5 +50,5 @@ if __name__ == '__main__':
                             'data/adfa/Adduser_k_5_rate_10')
     # reader = SmdDataReader()
     # model = FirstTaskLearnerWrapper(lambda: IsolationForestAdapter())
-    model = SingleTaskLearnerWrapper(lambda: OurModelAdapterBase())
+    model = SingleTaskLearnerWrapper(lambda: OurModel(VAE(), cpd=LIFEWATCH(), memory=SimpleFlatMemory()))
     experiment(reader, model)

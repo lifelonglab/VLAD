@@ -1,4 +1,5 @@
 from data_readers.adfa_data_reader import AdfaDataReader
+from data_readers.smd_data_reader import SmdDataReader
 from experiment import experiment
 from models.classic.isolation_forest import IsolationForestAdapter
 from models.classic.lof import LocalOutlierFactorAdapter
@@ -19,7 +20,7 @@ from strategies.stl_wrapper import SingleTaskLearnerWrapper
 
 adfa_data_reader = lambda: AdfaDataReader('data/adfa/Adduser_k_5_rate_10_iter_1.csv',
                                           'data/adfa/Adduser_k_5_rate_10')
-# smd_data_reader = lambda: SmdDataReader()
+smd_data_reader = lambda: SmdDataReader()
 
 data_readers = [adfa_data_reader]
 models_creators = [
