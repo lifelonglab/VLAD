@@ -27,3 +27,6 @@ class SimpleFlatMemory(Memory):
         return {
             'limit_per_concept': self.limit_per_task
         }
+
+    def samples_number(self) -> int:
+        return sum([len(m) for m in self.memory])

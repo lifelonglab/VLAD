@@ -20,3 +20,7 @@ class Memory(ABC):
     @abstractmethod
     def params(self) -> Dict:
         ...
+
+    @abstractmethod
+    def samples_number(self) -> int:
+        ...
