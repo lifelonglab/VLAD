@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict
+from typing import Dict, Optional
 
 from models.model_base import ModelBase
 
@@ -22,3 +22,6 @@ class Strategy(ModelBase, ABC):
 
     def parameters(self) -> Dict:
         return self.model().parameters()
+
+    def additional_measurements(self) -> Optional[Dict]:
+        return self.model().additional_measurements()

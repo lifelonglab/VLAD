@@ -9,10 +9,11 @@ from models.our.memories.memory import Memory
 from models.our.memories.simple_flat_memory import SimpleFlatMemory
 from models.our.models.ae import AE
 
-
 # when to retrain - we need to handle this
 # use data and replay - should we use whole data or limit it?
 #
+from models.our.time_measurement import OurModelTimeMeasurement
+
 
 class OurModel(ModelBase):
     def __init__(self, model, cpd, memory):
@@ -20,13 +21,22 @@ class OurModel(ModelBase):
         self.cpd: CPD = cpd
         self.memory: Memory = memory
 
+        self.time_measurement = OurModelTimeMeasurement()
+
     def learn(self, data):
+        self.time_measurement.reset()
+        self.time_measurement.start_cpd()
         cps = self.cpd.detect_cp(data)
+        self.time_measurement.finish_cpd()
 
         if len(cps) > 0:
+            self.time_measurement.start_training()
             self._retrain_model(data)
+            self.time_measurement.finish_training()
 
+        self.time_measurement.start_memory_management()
         self._update_memory(cps, data)
+        self.time_measurement.finish_memory_management()
 
         # train each N iterations # forced sleep
 
@@ -46,7 +56,7 @@ class OurModel(ModelBase):
                 self.memory.new_data(data[0:cps[0].index], is_new_dist=False)
             for i, cp in enumerate(cps):
                 start_index = cp.index
-                end_index = len(data) if i == len(cps) - 1 else cps[i+1].index
+                end_index = len(data) if i == len(cps) - 1 else cps[i + 1].index
                 task_data = data[start_index:end_index]
                 self.memory.new_data(task_data, is_new_dist=cp.is_new_dist, distribution=cp.distribution)
         else:
@@ -57,3 +67,6 @@ class OurModel(ModelBase):
         print('length of replay', len(replay))
         retrain_data = np.concatenate((replay, data)) if len(replay) > 0 else data
         self.model.learn(retrain_data)  # or if there are too many iterations without change
+
+    def additional_measurements(self) -> Dict:
+        return {'memory_samples_number': self.memory.samples_number(), 'phases_times': self.time_measurement.results()}

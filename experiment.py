@@ -1,5 +1,6 @@
 from data_readers.adfa_data_reader import AdfaDataReader
 from data_readers.data_reader import DataReader
+from metrics.other_values_measurement import OtherValuesMeasurement
 from metrics.tasks_matrix.predictions_collector import PredictionsCollector
 from metrics.time.time_measurement import TimeMeasurement
 from models.model_base import ModelBase
@@ -18,6 +19,7 @@ def experiment(data_reader: DataReader, model: Strategy):
     # init
     results_collector = PredictionsCollector()
     time_measurement = TimeMeasurement()
+    other_measurements = OtherValuesMeasurement()
 
     test_tasks = data_reader.load_test_tasks()
 
@@ -28,6 +30,7 @@ def experiment(data_reader: DataReader, model: Strategy):
         time_measurement.start_training(task.name)
         model.learn(task.data)
         time_measurement.finish_training(task.name)
+        other_measurements.add(model.additional_measurements(), task_name=task.name)
 
         # evaluate on all task
         time_measurement.start_testing_after(task.name)
@@ -42,7 +45,7 @@ def experiment(data_reader: DataReader, model: Strategy):
     collected_results = results_collector.results()
     processed_results = process_results(collected_results)
     save_results(model, data_reader, processed_results=processed_results, collected_results=collected_results,
-                 times=time_measurement.results())
+                 times=time_measurement.results(), other_measurements=other_measurements.results())
 
 
 if __name__ == '__main__':

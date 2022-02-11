@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 
 import numpy as np
 
@@ -18,7 +18,7 @@ class NumpyEncoder(json.JSONEncoder):
 
 
 def save_results(model: Strategy, data_reader: DataReader, processed_results: Dict, collected_results: CollectedResults,
-                 times: Dict):
+                 times: Dict, other_measurements: List[Dict]):
     metadata = {
         'name': model.name(),
         'strategy': model.strategy_name(),
@@ -30,6 +30,7 @@ def save_results(model: Strategy, data_reader: DataReader, processed_results: Di
 
     output = {'metadata': metadata,
               'times': times,
+              'other_measurements': other_measurements,
               'results': processed_results}
 
     path = Path(f'results/{data_reader.dataset_id()}')

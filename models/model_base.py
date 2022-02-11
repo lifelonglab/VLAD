@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict
+from typing import Dict, Optional
 
 
 class ModelBase(ABC):
@@ -18,3 +18,6 @@ class ModelBase(ABC):
     @abstractmethod
     def parameters(self) -> Dict:
         ...
+
+    def additional_measurements(self) -> Optional[Dict]:
+        return None
