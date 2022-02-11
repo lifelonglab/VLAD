@@ -4,11 +4,14 @@ from metrics.other_values_measurement import OtherValuesMeasurement
 from metrics.tasks_matrix.predictions_collector import PredictionsCollector
 from metrics.time.time_measurement import TimeMeasurement
 from models.model_base import ModelBase
+from models.our.cpds.always_new_cpd import AlwaysNewCPD
 from models.our.cpds.lifewatch.lifewatch import LIFEWATCH
+from models.our.memories.hierarchical_memory import HierarchicalMemory
 from models.our.memories.simple_flat_memory import SimpleFlatMemory
 from models.our.models.vae import VAE
 from models.our.our import OurModel
 from models.our.our_adapter import OurModelAdapterBase
+from strategies.incremental_task_wrapper import IncrementalTaskLearnerWrapper
 from strategies.stl_wrapper import SingleTaskLearnerWrapper
 from results import process_results
 from results_writer import save_results
@@ -53,5 +56,5 @@ if __name__ == '__main__':
                             'data/adfa/Adduser_k_5_rate_10')
     # reader = SmdDataReader()
     # model = FirstTaskLearnerWrapper(lambda: IsolationForestAdapter())
-    model = SingleTaskLearnerWrapper(lambda: OurModel(VAE(), cpd=LIFEWATCH(), memory=SimpleFlatMemory()))
+    model = IncrementalTaskLearnerWrapper(lambda: OurModel(VAE(), cpd=AlwaysNewCPD(), memory=HierarchicalMemory()))
     experiment(reader, model)
