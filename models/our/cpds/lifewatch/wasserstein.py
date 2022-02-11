@@ -8,7 +8,7 @@ numpy2ri.activate()
 r_wasserstein_dist = robjects.r['WassersteinTest']
 
 
-def wassertein(sample, dist):
+def wassertein_distance(sample, dist):
     try:
         return abs(r_wasserstein_dist(sample, dist)[0])
     except:

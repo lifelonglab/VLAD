@@ -4,7 +4,7 @@ import numpy as np
 
 from models.our.cpds.cpd import CPD, ChangePoint
 from models.our.cpds.lifewatch.iterate_batches import iterate_batches
-from models.our.cpds.lifewatch.wasserstein import wassertein
+from models.our.cpds.lifewatch.wasserstein import wassertein_distance
 
 
 class LIFEWATCH(CPD):
@@ -32,7 +32,7 @@ class LIFEWATCH(CPD):
                     self.is_creating_new_dist = False
                     self.current_dist = dist_id
             else:
-                ratios = {dist_id: wassertein(mini_batch, np.array(dist)) / self.thresholds[dist_id] for dist_id, dist
+                ratios = {dist_id: wassertein_distance(mini_batch, np.array(dist)) / self.thresholds[dist_id] for dist_id, dist
                           in self.distributions.items()}
                 current_ratio = ratios[self.current_dist]
                 if current_ratio < 1:  # the same dist
@@ -57,7 +57,7 @@ class LIFEWATCH(CPD):
 
     def update_threshold(self, dist_id):
         dist = np.array(self.distributions[dist_id])
-        values = [wassertein(np.array(s), dist) for s in iterate_batches(dist, self.sample_size)]
+        values = [wassertein_distance(np.array(s), dist) for s in iterate_batches(dist, self.sample_size)]
         self.thresholds[dist_id] = np.max(values) * self.threshold_ratio
 
     def name(self) -> str:
