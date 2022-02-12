@@ -6,6 +6,15 @@ import numpy as np
 from models.our.cpds.lifewatch.wasserstein import wassertein_distance
 from models.our.memories.memory import Memory
 
+# parameters: upper bound, number of levels
+
+# Idea 1: do it like CPDGA but with Wasserstein and LIFEWATCH
+# Idea 2:
+
+
+# Memory summarization: inverse pyramid with k-means
+#
+
 
 @dataclass
 class Distribution:
