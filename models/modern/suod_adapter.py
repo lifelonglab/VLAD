@@ -7,7 +7,7 @@ from models.model_base import ModelBase
 
 class SUODAdapter(ModelBase):
     def __init__(self):
-        self.suod = SUOD()
+        self.suod = SUOD(contamination=0.00001)
 
     def name(self):
         return 'SUOD'

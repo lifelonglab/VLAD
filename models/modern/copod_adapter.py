@@ -7,7 +7,7 @@ from models.model_base import ModelBase
 
 class COPODAdapter(ModelBase):
     def __init__(self):
-        self.copod = COPOD()
+        self.copod = COPOD(contamination=0.00001)
 
     def name(self):
         return 'COPOD'

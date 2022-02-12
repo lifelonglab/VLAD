@@ -34,10 +34,10 @@ smd_data_reader = lambda: SmdDataReader()
 
 data_readers = [adfa_data_reader]
 models_creators = [
-    # lambda: IsolationForestAdapter(), lambda: LocalOutlierFactorAdapter(), lambda: OneClassSVMAdapter(),
-    # lambda: COPODAdapter(), lambda: SUODAdapter()
+    lambda: IsolationForestAdapter(), lambda: LocalOutlierFactorAdapter(), lambda: OneClassSVMAdapter(),
+    lambda: COPODAdapter(), lambda: SUODAdapter()
     # lambda: AE(), lambda: VAE(),
-    *our_models,
+    # *our_models,
 ]
 strategies = [
     lambda model_fn, _: SingleTaskLearnerWrapper(model_fn),
