@@ -38,8 +38,8 @@ def experiment(data_reader: DataReader, model: Strategy):
         # evaluate on all task
         time_measurement.start_testing_after(task.name)
         for test_task in test_tasks:
-            predictions = model.predict(test_task.data)
-            results_collector.add(task.name, test_task=test_task.name, y_true=test_task.labels, y_pred=predictions)
+            predictions, scores = model.predict(test_task.data)
+            results_collector.add(task.name, test_task=test_task.name, y_true=test_task.labels, y_pred=predictions, scores=scores)
         time_measurement.finish_testing_after(task.name)
 
     time_measurement.finish()

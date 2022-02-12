@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Optional
 
+import numpy as np
+
 
 class ModelBase(ABC):
     @abstractmethod
@@ -12,7 +14,7 @@ class ModelBase(ABC):
         ...
 
     @abstractmethod
-    def predict(self, data, task_name=None):
+    def predict(self, data, task_name=None) -> (np.ndarray, np.ndarray):
         ...
 
     @abstractmethod

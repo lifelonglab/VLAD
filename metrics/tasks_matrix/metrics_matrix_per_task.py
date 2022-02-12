@@ -3,19 +3,20 @@ from typing import List, Dict
 from typing_extensions import Literal, TypedDict
 
 import numpy as np
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, roc_auc_score
 
 from metrics.metric_utils import prec_rec_f1
 from metrics.tasks_matrix.predictions_collector import CollectedResults, PredictionsDict
 
-BaseMetric = Literal['precision', 'recall', 'f1', 'accuracy']
-base_metrics: List[BaseMetric] = ['precision', 'recall', 'f1', 'accuracy']
+BaseMetric = Literal['precision', 'recall', 'f1', 'roc_auc', 'accuracy']
+base_metrics: List[BaseMetric] = ['precision', 'recall', 'f1', 'roc_auc', 'accuracy']
 
 
 class BaseMetricsResults(TypedDict):
     precision: float
     recall: float
     f1: float
+    roc_auc: float
     accuracy: float
 
 
@@ -42,12 +43,15 @@ class BaseMetricsMatrixPerTask:
     def _compute_metrics(self, results: PredictionsDict) -> BaseMetricsResults:
         y_true = results['y_true']
         y_pred = results['y_pred']
+        scores = results['scores']
         prec, rec, f1 = prec_rec_f1(y_true=y_true, y_pred=y_pred)
+        roc_auc = roc_auc_score(y_true=y_true, y_score=scores)
         accuracy = accuracy_score(y_true=y_true, y_pred=y_pred)
         return {
             'precision': prec,
             'recall': rec,
             'f1': f1,
+            'roc_auc': roc_auc,
             'accuracy': accuracy
         }
 

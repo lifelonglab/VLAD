@@ -16,7 +16,7 @@ class COPODAdapter(ModelBase):
         self.copod.fit(data)
 
     def predict(self, data, task_name=None):
-        return self.copod.predict(data)
+        return self.copod.predict(data), self.copod.decision_function(data)
 
     def parameters(self) -> Dict:
         return {'all': 'default'}

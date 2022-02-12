@@ -33,7 +33,7 @@ def save_results(model: Strategy, data_reader: DataReader, processed_results: Di
               'other_measurements': other_measurements,
               'results': processed_results}
 
-    path = Path(f'results/{data_reader.dataset_id()}')
+    path = Path(f'out/results/{data_reader.dataset_id()}/{model.strategy_name()}')
     path.mkdir(exist_ok=True, parents=True)
 
     json_str = json.dumps(output, indent=4)

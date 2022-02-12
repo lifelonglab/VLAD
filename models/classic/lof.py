@@ -21,7 +21,7 @@ class LocalOutlierFactorAdapter(ModelBase):
         self.lof.fit(data)
 
     def predict(self, data, task_name=None):
-        return adjust_predictions(self.lof.predict(data))
+        return adjust_predictions(self.lof.predict(data)), self.lof.decision_function(data)
 
     def parameters(self) -> Dict:
         return self.params

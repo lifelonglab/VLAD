@@ -30,7 +30,7 @@ class AE(ModelBase):
     def predict(self, data, **kwargs):
         reconstruction = self.model.predict(data)
         errors = mse(data, reconstruction)
-        return [1 if e > self.threshold else 0 for e in errors]
+        return [1 if e > self.threshold else 0 for e in errors], errors
 
     def _create_model(self):
         input_size = self.params['input_size']

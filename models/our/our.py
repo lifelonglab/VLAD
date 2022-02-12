@@ -41,7 +41,7 @@ class OurModel(ModelBase):
         # train each N iterations # forced sleep
 
     def predict(self, data, task_name=None):
-        return self.model.predict(data, )
+        return self.model.predict(data)
 
     def name(self):
         return f'OurModel_{self.model.name()}_{self.cpd.name()}_{self.memory.name()}'

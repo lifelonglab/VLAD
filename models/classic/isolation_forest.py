@@ -15,7 +15,7 @@ class IsolationForestAdapter(ModelBase):
         self.model.fit(data)
 
     def predict(self, data, task_name=None):
-        return adjust_predictions(self.model.predict(data))
+        return adjust_predictions(self.model.predict(data)), self.model.decision_function(data)
 
     def name(self):
         return 'IsolationForest'
