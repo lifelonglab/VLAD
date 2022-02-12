@@ -1,0 +1,1 @@
+COPOD - training only on normal data? contamination=0

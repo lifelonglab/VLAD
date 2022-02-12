@@ -2,6 +2,7 @@ from typing import Dict
 
 from sklearn.svm import OneClassSVM
 
+from models.classic.utils import adjust_predictions
 from models.model_base import ModelBase
 
 
@@ -19,7 +20,7 @@ class OneClassSVMAdapter(ModelBase):
         self.svm.fit(data)
 
     def predict(self, data, task_name=None):
-        return self.svm.predict(data)
+        return adjust_predictions(self.svm.predict(data))
 
     def parameters(self) -> Dict:
         return {

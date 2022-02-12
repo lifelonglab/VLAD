@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.ensemble import IsolationForest
 
+from models.classic.utils import adjust_predictions
 from models.model_base import ModelBase
 
 
@@ -14,10 +15,7 @@ class IsolationForestAdapter(ModelBase):
         self.model.fit(data)
 
     def predict(self, data, task_name=None):
-        predictions = self.model.predict(data)
-        predictions = np.where(predictions == 1, 0, predictions)
-        predictions = np.where(predictions == -1, 1, predictions)
-        return predictions
+        return adjust_predictions(self.model.predict(data))
 
     def name(self):
         return 'IsolationForest'

@@ -2,6 +2,7 @@ from typing import Dict
 
 from sklearn.neighbors import LocalOutlierFactor
 
+from models.classic.utils import adjust_predictions
 from models.model_base import ModelBase
 
 
@@ -20,7 +21,7 @@ class LocalOutlierFactorAdapter(ModelBase):
         self.lof.fit(data)
 
     def predict(self, data, task_name=None):
-        return self.lof.predict(data)
+        return adjust_predictions(self.lof.predict(data))
 
     def parameters(self) -> Dict:
         return self.params
