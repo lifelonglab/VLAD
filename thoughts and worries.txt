@@ -1,1 +1,10 @@
+WORRIES
 COPOD - training only on normal data? contamination=0 : "ValueError: contamination must be in (0, 0.5], got: 0.000000"
+
+
+
+
+
+
+THOUGHTS
+Show why lifelong cpd

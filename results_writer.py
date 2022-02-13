@@ -40,7 +40,11 @@ def save_results(model: Strategy, data_reader: DataReader, processed_results: Di
     (path / Path(f'{model.name()}.json')).write_text(json_str, encoding='utf-8')
 
     debug_output = {'metadata': metadata, 'collected_results': collected_results}
-    json_str = json.dumps(debug_output, indent=4, cls=NumpyEncoder)
     debug_path = (path / Path(f'debug'))
     debug_path.mkdir(parents=True, exist_ok=True)
-    (debug_path / Path(f'{model.name()}.json')).write_text(json_str, encoding='utf-8')
+    debug_file = (debug_path / Path(f'{model.name()}.json'))
+    np.save(str(debug_file), debug_output, allow_pickle=True)
+    # json_str = json.dumps(debug_output, indent=4, cls=NumpyEncoder)
+    # debug_path = (path / Path(f'debug'))
+    # debug_path.mkdir(parents=True, exist_ok=True)
+    # (debug_path / Path(f'{model.name()}.json')).write_text(json_str, encoding='utf-8')
