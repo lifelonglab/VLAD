@@ -48,8 +48,8 @@ strategies = [
 ]
 
 for data_reader_fn in data_readers:
-    for model_fn in models_creators:
-        for strategy_fn in strategies:
+    for strategy_fn in strategies:
+        for model_fn in models_creators:
             data_reader = data_reader_fn()
             final_model = strategy_fn(model_fn, lambda: list(data_reader.iterate_tasks()))
             print(f'Running {final_model.name()} on {data_reader.dataset_id()}')
