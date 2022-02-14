@@ -13,7 +13,7 @@ from models.model_base import ModelBase
 class AE(ModelBase):
     def __init__(self):
         self.params = {
-            'input_size': 6,
+            'input_size': 29,
             'encoding_dim': 2,
             'l_rate': 0.01
         }
@@ -22,7 +22,7 @@ class AE(ModelBase):
     def learn(self, data):
         self.model.fit(data, data,
                        shuffle=False,
-                       epochs=32,
+                       epochs=256,
                        batch_size=256)
         predictions = self.model.predict(data)
         self.threshold = max_threshold(data, predictions)

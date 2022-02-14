@@ -14,7 +14,7 @@ from models.our.utils import mse
 class VAE(ModelBase):
     def __init__(self):
         self.params = {
-            'input_shape': 6,
+            'input_shape': 29,
             'intermediate_dim': 3,
             'latent_dim': 2
         }
@@ -74,7 +74,7 @@ class VAE(ModelBase):
     def learn(self, data):
         self.vae_model.fit(data, data,
                            shuffle=False,
-                           epochs=32,
+                           epochs=256,
                            batch_size=256)
         predictions = self.vae_model.predict(data)
         self.threshold = max_threshold(data, predictions)

@@ -1,4 +1,5 @@
 from data_readers.adfa_data_reader import AdfaDataReader
+from data_readers.credit_card_data_reader import CreditCardDataReader
 from data_readers.data_reader import DataReader
 from metrics.other_values_measurement import OtherValuesMeasurement
 from metrics.tasks_matrix.predictions_collector import PredictionsCollector
@@ -53,9 +54,10 @@ def experiment(data_reader: DataReader, model: Strategy):
 
 
 if __name__ == '__main__':
-    reader = AdfaDataReader('data/adfa/Adduser_k_5_rate_10_iter_1.csv',
-                            'data/adfa/Adduser_k_5_rate_10')
+    # reader = AdfaDataReader('data/adfa/Adduser_k_5_rate_10_iter_1.csv',
+    #                         'data/adfa/Adduser_k_5_rate_10')
     # reader = SmdDataReader()
+    reader = CreditCardDataReader('data/creditcard/creditcard.npy')
     model = FirstTaskLearnerWrapper(lambda: IsolationForestAdapter())
     # model = IncrementalTaskLearnerWrapper(lambda: OurModel(VAE(), cpd=AlwaysNewCPD(), memory=HierarchicalMemory()))
     experiment(reader, model)

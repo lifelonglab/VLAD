@@ -1,6 +1,7 @@
 import itertools
 
 from data_readers.adfa_data_reader import AdfaDataReader
+from data_readers.credit_card_data_reader import CreditCardDataReader
 from data_readers.smd_data_reader import SmdDataReader
 from experiment import experiment
 from models.classic.isolation_forest import IsolationForestAdapter
@@ -31,12 +32,13 @@ from strategies.stl_wrapper import SingleTaskLearnerWrapper
 adfa_data_reader = lambda: AdfaDataReader('data/adfa/Adduser_k_5_rate_10_iter_1.csv',
                                           'data/adfa/Adduser_k_5_rate_10')
 smd_data_reader = lambda: SmdDataReader()
+credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard.npy')
 
-data_readers = [adfa_data_reader]
+data_readers = [credit_card_data_reader]
 models_creators = [
     lambda: IsolationForestAdapter(), lambda: LocalOutlierFactorAdapter(), lambda: OneClassSVMAdapter(),
-    lambda: COPODAdapter(), lambda: SUODAdapter()
-    # lambda: AE(), lambda: VAE(),
+    lambda: COPODAdapter(), lambda: SUODAdapter(),
+    lambda: AE(), lambda: VAE(),
     # *our_models,
 ]
 strategies = [
