@@ -3,13 +3,13 @@ from typing import List, Dict
 from typing_extensions import Literal, TypedDict
 
 import numpy as np
-from sklearn.metrics import accuracy_score, roc_auc_score
+from sklearn.metrics import accuracy_score, roc_auc_score, precision_recall_curve, auc
 
 from metrics.metric_utils import prec_rec_f1
 from metrics.tasks_matrix.predictions_collector import CollectedResults, PredictionsDict
 
-BaseMetric = Literal['precision', 'recall', 'f1', 'roc_auc', 'accuracy']
-base_metrics: List[BaseMetric] = ['precision', 'recall', 'f1', 'roc_auc', 'accuracy']
+BaseMetric = Literal['precision', 'recall', 'f1', 'roc_auc', 'accuracy', 'pr_auc']
+base_metrics: List[BaseMetric] = ['precision', 'recall', 'f1', 'roc_auc', 'accuracy', 'pr_auc']
 
 
 class BaseMetricsResults(TypedDict):
@@ -18,6 +18,7 @@ class BaseMetricsResults(TypedDict):
     f1: float
     roc_auc: float
     accuracy: float
+    pr_auc: float
 
 
 TasksMatrixResults = Dict[str, Dict[str, BaseMetricsResults]]
@@ -47,11 +48,15 @@ class BaseMetricsMatrixPerTask:
         prec, rec, f1 = prec_rec_f1(y_true=y_true, y_pred=y_pred)
         roc_auc = roc_auc_score(y_true=y_true, y_score=scores)
         accuracy = accuracy_score(y_true=y_true, y_pred=y_pred)
+
+        precision, recall, thresholds = precision_recall_curve(y_true, scores)
+        auc_precision_recall = auc(recall, precision)
         return {
             'precision': prec,
             'recall': rec,
             'f1': f1,
             'roc_auc': roc_auc,
+            'pr_auc': auc_precision_recall,
             'accuracy': accuracy
         }
 
