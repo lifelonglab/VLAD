@@ -41,7 +41,8 @@ def experiment(data_reader: DataReader, model: Strategy):
         time_measurement.start_testing_after(task.name)
         for test_task in test_tasks:
             predictions, scores = model.predict(test_task.data)
-            results_collector.add(task.name, test_task=test_task.name, y_true=test_task.labels, y_pred=predictions, scores=scores)
+            results_collector.add(task.name, test_task=test_task.name, y_true=test_task.labels, y_pred=predictions,
+                                  scores=scores)
         time_measurement.finish_testing_after(task.name)
 
     time_measurement.finish()
@@ -54,10 +55,10 @@ def experiment(data_reader: DataReader, model: Strategy):
 
 
 if __name__ == '__main__':
-    # reader = AdfaDataReader('data/adfa/Adduser_k_5_rate_10_iter_1.csv',
-    #                         'data/adfa/Adduser_k_5_rate_10')
+    reader = AdfaDataReader('data/adfa/Adduser_k_5_rate_10_iter_1.csv',
+                            'data/adfa/Adduser_k_5_rate_10')
     # reader = SmdDataReader()
-    reader = CreditCardDataReader('data/creditcard/creditcard.npy')
+    # reader = CreditCardDataReader('data/creditcard/creditcard.npy')
     model = FirstTaskLearnerWrapper(lambda: IsolationForestAdapter())
     # model = IncrementalTaskLearnerWrapper(lambda: OurModel(VAE(), cpd=AlwaysNewCPD(), memory=HierarchicalMemory()))
     experiment(reader, model)

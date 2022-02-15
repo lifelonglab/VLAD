@@ -3,6 +3,8 @@ COPOD - training only on normal data? contamination=0 : "ValueError: contaminati
 
 
 
+IDEAS
+partial_fit for isolation forest and others
 
 
 
