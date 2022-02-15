@@ -29,10 +29,9 @@ memories = [lambda: SimpleFlatMemory(), lambda: FlatMemoryWithSummarization()]
 our_models = [lambda: OurModel(base_model_fn(), cpd=cpd_fn(), memory=memory_fn()) for base_model_fn, cpd_fn, memory_fn
               in itertools.product(our_models_base, our_cpds, memories)]
 
-adfa_data_reader = lambda: AdfaDataReader('data/adfa/Adduser_k_5_rate_10_iter_1.csv',
-                                          'data/adfa/Adduser_k_5_rate_10')
-smd_data_reader = lambda: SmdDataReader()
-credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard.npy')
+adfa_data_reader = lambda: AdfaDataReader('data/adfa/adfa.npy')
+# smd_data_reader = lambda: SmdDataReader()
+# credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard.npy')
 
 data_readers = [adfa_data_reader]
 models_creators = [

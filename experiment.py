@@ -55,8 +55,7 @@ def experiment(data_reader: DataReader, model: Strategy):
 
 
 if __name__ == '__main__':
-    reader = AdfaDataReader('data/adfa/Adduser_k_5_rate_10_iter_1.csv',
-                            'data/adfa/Adduser_k_5_rate_10')
+    reader = AdfaDataReader('data/adfa/adfa.npy')
     # reader = SmdDataReader()
     # reader = CreditCardDataReader('data/creditcard/creditcard.npy')
     model = FirstTaskLearnerWrapper(lambda: IsolationForestAdapter())
