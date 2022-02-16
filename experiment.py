@@ -7,10 +7,11 @@ from metrics.time.time_measurement import TimeMeasurement
 from models.classic.isolation_forest import IsolationForestAdapter
 from models.model_base import ModelBase
 from models.our.cpds.always_new_cpd import AlwaysNewCPD
+from models.our.hierarchical_lifewatch import HierarchicalLifewatchMemory
 from models.our.memories.hierarchical_memory import HierarchicalMemory
 from models.our.memories.simple_flat_memory import SimpleFlatMemory
 from models.our.models.vae import VAE
-from models.our.our import OurModel
+from models.our.our import OurModel, create_our_model_mixed
 from models.our.our_adapter import OurModelAdapterBase
 from strategies.ftl_wrapper import FirstTaskLearnerWrapper
 from strategies.incremental_task_wrapper import IncrementalTaskLearnerWrapper
@@ -58,6 +59,6 @@ if __name__ == '__main__':
     reader = AdfaDataReader('data/adfa/adfa.npy')
     # reader = SmdDataReader()
     # reader = CreditCardDataReader('data/creditcard/creditcard.npy')
-    model = FirstTaskLearnerWrapper(lambda: IsolationForestAdapter())
-    # model = IncrementalTaskLearnerWrapper(lambda: OurModel(VAE(), cpd=AlwaysNewCPD(), memory=HierarchicalMemory()))
+    # model = IncrementalTaskLearnerWrapper(lambda: IsolationForestAdapter())
+    model = IncrementalTaskLearnerWrapper(lambda: create_our_model_mixed(IsolationForestAdapter(), HierarchicalLifewatchMemory()))
     experiment(reader, model)

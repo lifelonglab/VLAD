@@ -13,7 +13,7 @@ from models.model_base import ModelBase
 class AE(ModelBase):
     def __init__(self):
         self.params = {
-            'input_size': 29,
+            'input_size': 6,
             'encoding_dim': 2,
             'l_rate': 0.01
         }

@@ -21,7 +21,7 @@ def process_global_to_csv(path: Path):
     strategy = []
     model_names = []
     results = defaultdict(list)
-    for file in path.glob('*.json'):
+    for file in path.glob('*/*.json'):
         with open(file) as f:
             data = json.load(f)
 
@@ -40,12 +40,12 @@ def process_global_to_csv(path: Path):
     df['model_name'] = model_names
     for key, values in results.items():
         df[key] = values
-    Path('results_analysis').mkdir(exist_ok=True)
-    df.to_csv('results_analysis/analysis.csv', index=False)
+    Path('out/results_analysis').mkdir(exist_ok=True)
+    df.to_csv(f'out/results_analysis/analysis_{data["metadata"]["dataset"]}.csv', index=False)
 
 
 
 if __name__ == '__main__':
-    path = Path('results/ADFA_5')
+    path = Path('out/results/credit_card')
     print(path.exists())
     process_global_to_csv(path)

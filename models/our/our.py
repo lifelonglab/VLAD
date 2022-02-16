@@ -22,6 +22,7 @@ class OurModel(ModelBase):
         self.memory: Memory = memory
 
         self.time_measurement = OurModelTimeMeasurement()
+        self.ever_trained = False
 
     def learn(self, data):
         self.time_measurement.reset()
@@ -29,10 +30,11 @@ class OurModel(ModelBase):
         cps = self.cpd.detect_cp(data)
         self.time_measurement.finish_cpd()
 
-        if len(cps) > 0:
+        if len(cps) > 0 or not self.ever_trained:
             self.time_measurement.start_training()
             self._retrain_model(data)
             self.time_measurement.finish_training()
+            self.ever_trained = True
 
         self.time_measurement.start_memory_management()
         self._update_memory(cps, data)
@@ -70,3 +72,7 @@ class OurModel(ModelBase):
 
     def additional_measurements(self) -> Dict:
         return {'memory_samples_number': self.memory.samples_number(), 'phases_times': self.time_measurement.results()}
+
+
+def create_our_model_mixed(model, cpd_memory):
+    return OurModel(model, cpd=cpd_memory, memory=cpd_memory)

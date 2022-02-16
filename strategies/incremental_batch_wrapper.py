@@ -8,7 +8,7 @@ from strategies.strategy import Strategy
 class IncrementalBatchLearnerWrapper(Strategy):
     def __init__(self, model_creation_fn: Callable[[], ModelBase]):
         self._model = model_creation_fn()
-        self.batch_size = 1024
+        self.batch_size = 128
 
     def learn(self, data) -> None:
         iterations = math.ceil(data.shape[0] / self.batch_size)

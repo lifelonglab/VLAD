@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Dict, List
 
 import numpy as np
@@ -7,39 +8,43 @@ from models.our.cpds.lifewatch.iterate_batches import iterate_batches
 from models.our.cpds.lifewatch.wasserstein import wassertein_distance
 
 
-class LIFEWATCH(CPD):
-    def __init__(self, threshold_ratio=2, sample_size=1, size_limit=30, min_dist_size=10):
+@dataclass
+class Distribution:
+    dist_id: str
+    data: np.ndarray
+
+
+class LIFEWATCHWithExternalMemory(CPD):
+    def __init__(self, threshold_ratio=2, sample_size=1, min_dist_size=100):
         self.threshold_ratio = threshold_ratio
         self.sample_size = sample_size
-        self.size_limit = size_limit
         self.min_dist_size = min_dist_size
+        self.distributions: Dict[any, List] = {}
+        self.thresholds: Dict[any, float] = {}
 
-        self.distributions = {0: []}
-        self.thresholds = {}
         self.is_creating_new_dist = True
-        self.current_dist = None
+        self.creating_dist_id = 0
+        self.current_dist = 0
 
-    def detect_cp(self, batch: np.array) -> List[ChangePoint]:
+    def detect_cp(self, data) -> List[ChangePoint]:
         cps: List[ChangePoint] = []
-        for mini_batch_id, mini_batch in enumerate(iterate_batches(batch, self.sample_size)):
+        for mini_batch_id, mini_batch in enumerate(iterate_batches(data, self.sample_size)):
             if len(mini_batch) != self.sample_size:
                 continue
             if self.is_creating_new_dist:
-                dist_id = len(self.distributions) - 1
-                self.distributions[dist_id].extend(mini_batch)
-                if len(self.distributions[dist_id]) >= self.min_dist_size:
-                    self.update_threshold(dist_id)
+                self.distributions[self.creating_dist_id].extend(mini_batch)
+                if len(self.distributions[self.creating_dist_id]) >= self.min_dist_size:
+                    self.update_threshold(self.creating_dist_id)
                     self.is_creating_new_dist = False
-                    self.current_dist = dist_id
+                    self.current_dist = self.creating_dist_id
+                    self.creating_dist_id = None
             else:
-                ratios = {dist_id: wassertein_distance(mini_batch, np.array(dist)) / self.thresholds[dist_id] for dist_id, dist
+                ratios = {dist_id: wassertein_distance(mini_batch, np.array(dist)) / self.thresholds[dist_id] for
+                          dist_id, dist
                           in self.distributions.items()}
                 current_ratio = ratios[self.current_dist]
-                if current_ratio < 1:  # the same dist
-                    if len(self.distributions[self.current_dist]) < self.size_limit or self.size_limit == 0:
-                        self.distributions[self.current_dist].extend(mini_batch.tolist())
-                        if self.size_limit != 0:
-                            self.update_threshold(self.current_dist)
+                if current_ratio < 1:  # the same dist:
+                    self.distributions[self.current_dist].extend(mini_batch.tolist())
                 else:
                     best_dist, best_ratio = sorted(ratios.items(), key=lambda it: it[1])[0]
                     cp_index = mini_batch_id * self.sample_size
@@ -49,10 +54,7 @@ class LIFEWATCH(CPD):
                         cps.append(ChangePoint(index=cp_index, is_new_dist=True))
                     else:
                         self.current_dist = best_dist
-                        if len(self.distributions[best_dist]) < self.size_limit or self.size_limit == 0:
-                            self.distributions[best_dist].extend(mini_batch.tolist())
-                            if self.size_limit != 0:
-                                self.update_threshold(best_dist)
+                        self.distributions[best_dist].extend(mini_batch.tolist())
                         cps.append(ChangePoint(index=cp_index, is_new_dist=False, distribution=best_dist))
         return cps
 
@@ -65,11 +67,10 @@ class LIFEWATCH(CPD):
         self.distributions = distributions
         for dist_id in self.distributions.keys():
             self.update_threshold(dist_id)
-        self.is_creating_new_dist = False
 
     def name(self) -> str:
-        return 'LIFEWATCH'
+        return 'LIFEWATCH-external'
 
     def params(self) -> Dict:
-        return {'threshold_ratio': self.threshold_ratio, 'sample_size': self.sample_size, 'size_limit': self.size_limit,
+        return {'threshold_ratio': self.threshold_ratio, 'sample_size': self.sample_size,
                 'min_dist_size': self.min_dist_size}

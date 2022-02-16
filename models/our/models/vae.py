@@ -14,7 +14,7 @@ from models.our.utils import mse
 class VAE(ModelBase):
     def __init__(self):
         self.params = {
-            'input_shape': 29,
+            'input_shape': 6,
             'intermediate_dim': 3,
             'latent_dim': 2
         }

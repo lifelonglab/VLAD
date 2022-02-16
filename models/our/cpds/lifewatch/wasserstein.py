@@ -12,4 +12,5 @@ def wassertein_distance(sample, dist):
     try:
         return abs(r_wasserstein_dist(sample, dist)[0])
     except:
+        print("EXIT EXTI")
         exit()

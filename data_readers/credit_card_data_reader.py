@@ -9,7 +9,7 @@ from task import Task
 
 class CreditCardDataReader(ClusteredDataReader):
     def __init__(self, data_path):
-        super().__init__(self, data_path)
+        super().__init__(data_path)
 
     def dataset_id(self) -> str:
         return 'credit_card'
