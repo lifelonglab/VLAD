@@ -14,6 +14,9 @@ def _extract_for(global_results, metric, results_store):
     results_store[f'{metric}_rem'].append(metric_results['backward_transfer']['rem'])
     results_store[f'{metric}_bwt+'].append(metric_results['backward_transfer']['bwt+'])
     results_store[f'{metric}_forward_transfer'].append(metric_results['forward_transfer'])
+    results_store[f'{metric}_forward_transfer_darpa'].append(metric_results['forward_transfer_darpa'])
+    results_store[f'{metric}_backward_transfer_darpa'].append(metric_results['backward_transfer_darpa'])
+    results_store[f'{metric}_performance_maintenance_darpa'].append(metric_results['performance_maintenance_darpa'])
 
 
 def process_global_to_csv(path: Path):
@@ -46,6 +49,6 @@ def process_global_to_csv(path: Path):
 
 
 if __name__ == '__main__':
-    path = Path('out/results/credit_card')
+    path = Path('out/results/adfa_30')
     print(path.exists())
     process_global_to_csv(path)

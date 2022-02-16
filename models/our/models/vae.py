@@ -12,18 +12,19 @@ from models.our.utils import mse
 
 
 class VAE(ModelBase):
-    def __init__(self):
+    def __init__(self, input_features):
         self.params = {
-            'input_shape': 6,
-            'intermediate_dim': 3,
-            'latent_dim': 2
+            'input_size': input_features,
+            'intermediate_dim': max(3, int(input_features/2)),
+            'latent_dim': max(2, int(input_features/4)),
+            'l_rate': 0.0001
         }
         self.threshold = 0
         inputs, encoder = self._encoder()
         decoder = self._decoder()
         outputs = decoder(encoder(inputs))
         self.vae_model = Model(inputs, outputs, name='vae_mlp')
-        opt = optimizers.Adam(learning_rate=0.0001, clipvalue=0.5)
+        opt = optimizers.Adam(learning_rate=self.params['l_rate'], clipvalue=0.5)
 
         self.vae_model.compile(optimizer=opt, loss=self.vae_loss)
 
@@ -37,7 +38,7 @@ class VAE(ModelBase):
         return total_loss
 
     def _encoder(self):
-        input_shape = self.params['input_shape']
+        input_shape = self.params['input_size']
         intermediate_dim = self.params['intermediate_dim']
         latent_dim = self.params['latent_dim']
 
@@ -85,7 +86,7 @@ class VAE(ModelBase):
         return [1 if e > self.threshold else 0 for e in errors], errors
 
     def name(self):
-        return 'VAE_thr_100'
+        return 'VAE'
 
     def parameters(self) -> Dict:
         return self.params

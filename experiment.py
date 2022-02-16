@@ -11,6 +11,7 @@ from models.our.hierarchical_lifewatch import HierarchicalLifewatchMemory
 from models.our.memories.hierarchical_memory import HierarchicalMemory
 from models.our.memories.simple_flat_memory import SimpleFlatMemory
 from models.our.models.vae import VAE
+from models.our.models.vae_pyod import VAEpyod
 from models.our.our import OurModel, create_our_model_mixed
 from models.our.our_adapter import OurModelAdapterBase
 from strategies.ftl_wrapper import FirstTaskLearnerWrapper
@@ -56,9 +57,9 @@ def experiment(data_reader: DataReader, model: Strategy):
 
 
 if __name__ == '__main__':
-    reader = AdfaDataReader('data/adfa/adfa.npy')
+    reader = AdfaDataReader('data/adfa/adfa.npy', name='adfa')
     # reader = SmdDataReader()
     # reader = CreditCardDataReader('data/creditcard/creditcard.npy')
-    # model = IncrementalTaskLearnerWrapper(lambda: IsolationForestAdapter())
-    model = IncrementalTaskLearnerWrapper(lambda: create_our_model_mixed(IsolationForestAdapter(), HierarchicalLifewatchMemory()))
+    model = IncrementalTaskLearnerWrapper(lambda: VAEpyod())
+    # model = IncrementalTaskLearnerWrapper(lambda: create_our_model_mixed(IsolationForestAdapter(), HierarchicalLifewatchMemory()))
     experiment(reader, model)

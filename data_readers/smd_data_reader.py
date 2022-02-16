@@ -36,6 +36,10 @@ class SmdDataReader(DataReader):
 
         return tasks
 
+    def input_features(self) -> int:
+        return 38
+
+
 
 if __name__ == '__main__':
     reader = SmdDataReader()

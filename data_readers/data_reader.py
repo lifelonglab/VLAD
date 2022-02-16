@@ -18,3 +18,7 @@ class DataReader(ABC):
     def iterate_tasks(self) -> Iterable[Task]:
         ...
 
+    @abstractmethod
+    def input_features(self) -> int:
+        ...
+

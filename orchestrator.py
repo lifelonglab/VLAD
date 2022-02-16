@@ -30,22 +30,23 @@ memories = [lambda: SimpleFlatMemory(), lambda: FlatMemoryWithSummarization()]
 our_models = [lambda: OurModel(base_model_fn(), cpd=cpd_fn(), memory=memory_fn()) for base_model_fn, cpd_fn, memory_fn
               in itertools.product(our_models_base, our_cpds, memories)]
 
-adfa_data_reader = lambda: AdfaDataReader('data/adfa/adfa30.npy', 'adfa_30')
+adfa_data_reader = lambda: AdfaDataReader('data/adfa/adfa_30.npy', 'adfa_30')
 # smd_data_reader = lambda: SmdDataReader()
 # credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard.npy')
 
 data_readers = [adfa_data_reader]
 models_creators = [
-    lambda: IsolationForestAdapter(), lambda: LocalOutlierFactorAdapter(), lambda: OneClassSVMAdapter(),
-    lambda: COPODAdapter(), lambda: SUODAdapter(),
-    lambda: AE(), lambda: VAE(),
-    *our_models,
+    # lambda _: IsolationForestAdapter(), lambda _: LocalOutlierFactorAdapter(), lambda _: OneClassSVMAdapter(),
+    # lambda _: COPODAdapter(), lambda _: SUODAdapter(),
+    # lambda input_features: AE(input_features),
+    lambda input_features: VAE(input_features),
+    # *our_models,
     # lambda: create_our_model_mixed(COPODAdapter(), HierarchicalLifewatchMemory())
 ]
 strategies = [
-    # lambda model_fn, _: SingleTaskLearnerWrapper(model_fn),
+    lambda model_fn, _: SingleTaskLearnerWrapper(model_fn),
     # lambda model_fn, _: FirstTaskLearnerWrapper(model_fn),
-    # lambda model_fn, _: IncrementalTaskLearnerWrapper(model_fn),
+    lambda model_fn, _: IncrementalTaskLearnerWrapper(model_fn),
     lambda model_fn, _: IncrementalBatchLearnerWrapper(model_fn),
     # lambda model_fn, tasks_fn: KnowItAllLearnerWrapper(model_fn, learning_tasks=tasks_fn())
 ]
@@ -54,6 +55,6 @@ for data_reader_fn in data_readers:
     for strategy_fn in strategies:
         for model_fn in models_creators:
             data_reader = data_reader_fn()
-            final_model = strategy_fn(model_fn, lambda: list(data_reader.iterate_tasks()))
+            final_model = strategy_fn(lambda: model_fn(data_reader.input_features()), lambda: list(data_reader.iterate_tasks()))
             print(f'Running {final_model.name()} on {data_reader.dataset_id()}')
             experiment(data_reader, final_model)

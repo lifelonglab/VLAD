@@ -16,6 +16,8 @@ class AdfaDataReader(ClusteredDataReader):
     def dataset_id(self) -> str:
         return self.name
 
+    def input_features(self) -> int:
+        return 6
 
 if __name__ == '__main__':
     reader = AdfaDataReader('data/adfa/adfa.npy')

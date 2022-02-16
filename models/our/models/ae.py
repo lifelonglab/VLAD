@@ -11,11 +11,12 @@ from models.model_base import ModelBase
 
 
 class AE(ModelBase):
-    def __init__(self):
+    def __init__(self, input_features):
         self.params = {
-            'input_size': 6,
-            'encoding_dim': 2,
-            'l_rate': 0.01
+            'input_size': input_features,
+            'intermediate_dim': max(3, int(input_features/2)),
+            'encoding_dim': max(2, int(input_features/4)),
+            'l_rate': 0.0001
         }
         self.model = self._create_model()
 
@@ -34,25 +35,25 @@ class AE(ModelBase):
 
     def _create_model(self):
         input_size = self.params['input_size']
+        intermediate_dim = self.params['intermediate_dim']
         encoding_dim = self.params['encoding_dim']
 
         input = Input(shape=(input_size,))
 
-        encoded = Dense(encoding_dim, activation='relu')(input)
-        decoded = Dense(input_size, activation='sigmoid')(encoded)
-        autoencoder = Model(input, decoded)
+        intermediate_enc = Dense(intermediate_dim, activation='relu')(input)
+        encoded = Dense(encoding_dim, activation='relu')(intermediate_enc)
 
-        encoder = Model(input, encoded)
-        encoded_input = Input(shape=(encoding_dim,))
-        decoder_layer = autoencoder.layers[-1]
-        decoder = Model(encoded_input, decoder_layer(encoded_input))
+        intermediate_dec = Dense(intermediate_dim, activation='relu')(encoded)
+        decoded = Dense(input_size, activation='sigmoid')(intermediate_dec)
+
+        autoencoder = Model(input, decoded)
 
         adam = optimizers.Adam(lr=self.params['l_rate'])
         autoencoder.compile(optimizer=adam, loss='mean_squared_error')
         return autoencoder
 
     def name(self):
-        return 'AE_thr_max'
+        return 'AE'
 
     def parameters(self) -> Dict:
         return self.params
