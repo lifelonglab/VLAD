@@ -24,7 +24,7 @@ class FlatMemoryWithSummarization(Memory):
         return np.array(list(chain(*self.memory)))
 
     def name(self):
-        return 'FlatMemoryWithSummarization'
+        return f'FlatMemoryWithSummarization_limit_{self.store_limit}'
 
     def params(self) -> Dict:
         return {

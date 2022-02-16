@@ -24,9 +24,9 @@ from strategies.incremental_task_wrapper import IncrementalTaskLearnerWrapper
 from strategies.know_it_all_wrapper import KnowItAllLearnerWrapper
 from strategies.stl_wrapper import SingleTaskLearnerWrapper
 
-our_models_base = [lambda: COPODAdapter()]
+our_models_base = [lambda: COPODAdapter(), lambda input_features: VAE(input_features)]
 our_cpds = [lambda: AlwaysNewCPD(), lambda: LIFEWATCH()]
-memories = [lambda: SimpleFlatMemory(), lambda: FlatMemoryWithSummarization()]
+memories = [lambda: FlatMemoryWithSummarization()]
 our_models = [lambda: OurModel(base_model_fn(), cpd=cpd_fn(), memory=memory_fn()) for base_model_fn, cpd_fn, memory_fn
               in itertools.product(our_models_base, our_cpds, memories)]
 

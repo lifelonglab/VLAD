@@ -52,7 +52,7 @@ class VAE(ModelBase):
         return inputs, encoder
 
     def _decoder(self):
-        input_shape = self.params['input_shape']
+        input_shape = self.params['input_size']
         intermediate_dim = self.params['intermediate_dim']
         latent_dim = self.params['latent_dim']
 
