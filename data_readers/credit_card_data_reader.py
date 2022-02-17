@@ -14,6 +14,5 @@ class CreditCardDataReader(ClusteredDataReader):
     def dataset_id(self) -> str:
         return 'credit_card'
 
-    @property
     def input_features(self) -> int:
         return 29

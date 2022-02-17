@@ -42,18 +42,18 @@ our_mixed_models = [
     lambda _: create_our_model_mixed(COPODAdapter(), HierarchicalLifewatchMemory()),
 ]
 
-adfa_data_reader = lambda: AdfaDataReader('data/adfa/adfa_30.npy', 'adfa_30')
+# adfa_data_reader = lambda: AdfaDataReader('data/adfa/adfa_30.npy', 'adfa_30')
 # smd_data_reader = lambda: SmdDataReader()
-# credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard.npy')
+credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard.npy')
 
-data_readers = [adfa_data_reader]
+data_readers = [credit_card_data_reader]
 models_creators = [
     # lambda _: IsolationForestAdapter(), lambda _: LocalOutlierFactorAdapter(), lambda _: OneClassSVMAdapter(),
     # lambda _: COPODAdapter(), lambda _: SUODAdapter(),
-    # lambda input_features: AE(input_features),
-    # lambda input_features: VAE(input_features),
+    lambda input_features: AE(input_features),
+    lambda input_features: VAE(input_features),
     # lambda input_features: VAEpyod(input_features),
-    # *our_models,
+    *our_models,
     *our_mixed_models,
     # lambda: create_our_model_mixed(COPODAdapter(), HierarchicalLifewatchMemory())
 ]
