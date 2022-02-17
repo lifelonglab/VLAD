@@ -19,11 +19,19 @@ def _extract_for(global_results, metric, results_store):
     results_store[f'{metric}_performance_maintenance_darpa'].append(metric_results['performance_maintenance_darpa'])
 
 
+def _extract_times(results, results_store):
+    times_data = results['times']
+    results_store['training_times'].append(times_data['all_trainings'])
+    results_store['testing_times'].append(times_data['all_testings'])
+
+
 def process_global_to_csv(path: Path):
     names = []
     strategy = []
     model_names = []
     results = defaultdict(list)
+    times_results_store = defaultdict(list)
+
     for file in path.glob('*/*.json'):
         with open(file) as f:
             data = json.load(f)
@@ -37,15 +45,17 @@ def process_global_to_csv(path: Path):
             for metric in base_metrics:
                 _extract_for(global_results, metric, results)
 
-    df = pd.DataFrame()
-    df['model'] = names
-    df['strategy'] = strategy
-    df['model_name'] = model_names
-    for key, values in results.items():
-        df[key] = values
-    Path('out/results_analysis').mkdir(exist_ok=True)
-    df.to_csv(f'out/results_analysis/analysis_{data["metadata"]["dataset"]}.csv', index=False)
+            _extract_times(data, times_results_store)
 
+    for store, name in [(results, 'results'), (times_results_store, 'times')]:
+        df = pd.DataFrame()
+        df['model'] = names
+        df['strategy'] = strategy
+        df['model_name'] = model_names
+        for key, values in store.items():
+            df[key] = values
+        Path(f'out/results_analysis/{data["metadata"]["dataset"]}').mkdir(exist_ok=True)
+        df.to_csv(f'out/results_analysis/{data["metadata"]["dataset"]}/analysis_{name}.csv', index=False)
 
 
 if __name__ == '__main__':

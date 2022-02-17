@@ -5,4 +5,5 @@ def pretty_name(name):
         name = name.replace('FlatMemoryWithSummarization', 'Flat')
     if 'Hierarchical_LIFEWATCH_limit_1000_Hierarchical_LIFEWATCH_limit_1000' in name:
         name = name.replace('Hierarchical_LIFEWATCH_limit_1000_Hierarchical_LIFEWATCH_limit_1000', 'HierarchicalLifewatch')
+    name = name.replace('limit_1000', '')
     return name
