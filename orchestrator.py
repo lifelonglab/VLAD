@@ -16,6 +16,7 @@ from models.our.memories.flat_memory_with_summarization import FlatMemoryWithSum
 from models.our.memories.simple_flat_memory import SimpleFlatMemory
 from models.our.models.ae import AE
 from models.our.models.vae import VAE
+from models.our.models.vae_pyod import VAEpyod
 from models.our.our import OurModel, create_our_model_mixed
 from models.our.our_adapter import OurModelAdapterBase
 from strategies.ftl_wrapper import FirstTaskLearnerWrapper
@@ -23,12 +24,23 @@ from strategies.incremental_batch_wrapper import IncrementalBatchLearnerWrapper
 from strategies.incremental_task_wrapper import IncrementalTaskLearnerWrapper
 from strategies.know_it_all_wrapper import KnowItAllLearnerWrapper
 from strategies.stl_wrapper import SingleTaskLearnerWrapper
+from functools import partial
 
-our_models_base = [lambda: COPODAdapter(), lambda input_features: VAE(input_features)]
+
+def create_our_model(base_model_fn, cpd_fn, memory_fn):
+    return lambda input_features: OurModel(base_model_fn(input_features), cpd=cpd_fn(), memory=memory_fn())
+
+
+our_models_base = [lambda _: COPODAdapter(), lambda input_features: VAE(input_features)]
 our_cpds = [lambda: AlwaysNewCPD(), lambda: LIFEWATCH()]
 memories = [lambda: FlatMemoryWithSummarization()]
-our_models = [lambda: OurModel(base_model_fn(), cpd=cpd_fn(), memory=memory_fn()) for base_model_fn, cpd_fn, memory_fn
-              in itertools.product(our_models_base, our_cpds, memories)]
+our_models = [create_our_model(base_model_fn, cpd_fn, memory_fn) for base_model_fn, cpd_fn, memory_fn in
+              itertools.product(our_models_base, our_cpds, memories)]
+
+our_mixed_models = [
+    lambda input_features: create_our_model_mixed(VAE(input_features), HierarchicalLifewatchMemory()),
+    lambda _: create_our_model_mixed(COPODAdapter(), HierarchicalLifewatchMemory()),
+]
 
 adfa_data_reader = lambda: AdfaDataReader('data/adfa/adfa_30.npy', 'adfa_30')
 # smd_data_reader = lambda: SmdDataReader()
@@ -39,12 +51,15 @@ models_creators = [
     # lambda _: IsolationForestAdapter(), lambda _: LocalOutlierFactorAdapter(), lambda _: OneClassSVMAdapter(),
     # lambda _: COPODAdapter(), lambda _: SUODAdapter(),
     # lambda input_features: AE(input_features),
-    lambda input_features: VAE(input_features),
+    # lambda input_features: VAE(input_features),
+    # lambda input_features: VAEpyod(input_features),
     # *our_models,
+    *our_mixed_models,
     # lambda: create_our_model_mixed(COPODAdapter(), HierarchicalLifewatchMemory())
 ]
+print('models-creator', models_creators)
 strategies = [
-    lambda model_fn, _: SingleTaskLearnerWrapper(model_fn),
+    # lambda model_fn, _: SingleTaskLearnerWrapper(model_fn),
     # lambda model_fn, _: FirstTaskLearnerWrapper(model_fn),
     lambda model_fn, _: IncrementalTaskLearnerWrapper(model_fn),
     lambda model_fn, _: IncrementalBatchLearnerWrapper(model_fn),
@@ -54,7 +69,10 @@ strategies = [
 for data_reader_fn in data_readers:
     for strategy_fn in strategies:
         for model_fn in models_creators:
+            print(strategy_fn)
+            print(model_fn(0).name())
             data_reader = data_reader_fn()
-            final_model = strategy_fn(lambda: model_fn(data_reader.input_features()), lambda: list(data_reader.iterate_tasks()))
+            final_model = strategy_fn(lambda: model_fn(data_reader.input_features()),
+                                      lambda: list(data_reader.iterate_tasks()))
             print(f'Running {final_model.name()} on {data_reader.dataset_id()}')
             experiment(data_reader, final_model)

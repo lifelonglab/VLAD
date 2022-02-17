@@ -60,6 +60,6 @@ if __name__ == '__main__':
     reader = AdfaDataReader('data/adfa/adfa.npy', name='adfa')
     # reader = SmdDataReader()
     # reader = CreditCardDataReader('data/creditcard/creditcard.npy')
-    model = IncrementalTaskLearnerWrapper(lambda: VAEpyod())
-    # model = IncrementalTaskLearnerWrapper(lambda: create_our_model_mixed(IsolationForestAdapter(), HierarchicalLifewatchMemory()))
+    # model = IncrementalTaskLearnerWrapper(lambda: VAEpyod())
+    model = IncrementalTaskLearnerWrapper(lambda: create_our_model_mixed(IsolationForestAdapter(), HierarchicalLifewatchMemory()))
     experiment(reader, model)
