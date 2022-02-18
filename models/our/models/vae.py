@@ -15,8 +15,8 @@ class VAE(ModelBase):
     def __init__(self, input_features):
         self.params = {
             'input_size': input_features,
-            'intermediate_dim': max(3, int(input_features/2)),
-            'latent_dim': max(2, int(input_features/4)),
+            'intermediate_dim': 4,
+            'latent_dim': 2,
             'l_rate': 0.0001
         }
         self.threshold = 0
@@ -30,6 +30,7 @@ class VAE(ModelBase):
 
     def vae_loss(self, x, x_decoded_mean):
         # compute the average MSE error, then scale it up, ie. simply sum on all axes
+        x = x.astype(np.float32)
         reconstruction_loss = K.sum(K.square(x - x_decoded_mean))
         # compute the KL loss
         kl_loss = - 0.5 * K.sum(1 + self.z_log_var - K.square(self.z_mean) - K.square(K.exp(self.z_log_var)), axis=-1)
@@ -75,7 +76,7 @@ class VAE(ModelBase):
     def learn(self, data):
         self.vae_model.fit(data, data,
                            shuffle=False,
-                           epochs=256,
+                           epochs=128,
                            batch_size=256)
         predictions = self.vae_model.predict(data)
         self.threshold = max_threshold(data, predictions)

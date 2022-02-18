@@ -34,6 +34,7 @@ def experiment(data_reader: DataReader, model: Strategy):
     time_measurement.start()
     for task in data_reader.iterate_tasks():
         # train
+        print('learning task', task.name)
         time_measurement.start_training(task.name)
         model.learn(task.data)
         time_measurement.finish_training(task.name)

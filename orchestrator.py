@@ -1,7 +1,9 @@
 import itertools
 
 from data_readers.adfa_data_reader import AdfaDataReader
+from data_readers.bosc_data_reader import BoscDataReader
 from data_readers.credit_card_data_reader import CreditCardDataReader
+from data_readers.mixed_ids_data_reader import MixedIdsDataReader
 from data_readers.smd_data_reader import SmdDataReader
 from experiment import experiment
 from models.classic.isolation_forest import IsolationForestAdapter
@@ -31,29 +33,36 @@ def create_our_model(base_model_fn, cpd_fn, memory_fn):
     return lambda input_features: OurModel(base_model_fn(input_features), cpd=cpd_fn(), memory=memory_fn())
 
 
-our_models_base = [lambda _: COPODAdapter(), lambda input_features: VAE(input_features)]
-our_cpds = [lambda: AlwaysNewCPD(), lambda: LIFEWATCH()]
+our_models_base = [
+    lambda _: COPODAdapter(),
+    # lambda input_features: VAE(input_features)
+]
+our_cpds = [
+    # lambda: AlwaysNewCPD(),
+    lambda: LIFEWATCH()
+]
 memories = [lambda: FlatMemoryWithSummarization()]
 our_models = [create_our_model(base_model_fn, cpd_fn, memory_fn) for base_model_fn, cpd_fn, memory_fn in
               itertools.product(our_models_base, our_cpds, memories)]
 
 our_mixed_models = [
-    lambda input_features: create_our_model_mixed(VAE(input_features), HierarchicalLifewatchMemory()),
-    lambda _: create_our_model_mixed(COPODAdapter(), HierarchicalLifewatchMemory()),
+    lambda input_features: create_our_model_mixed(VAEpyod(input_features), HierarchicalLifewatchMemory()),
+    # lambda _: create_our_model_mixed(COPODAdapter(), HierarchicalLifewatchMemory()),
 ]
 
 # adfa_data_reader = lambda: AdfaDataReader('data/adfa/adfa_30.npy', 'adfa_30')
 # smd_data_reader = lambda: SmdDataReader()
-credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard.npy')
-
-data_readers = [credit_card_data_reader]
+# credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard_flat_proportions_20.npy', name='creditcard_flat20_proportions')
+# mixed_ids_data_reader = lambda: MixedIdsDataReader('data/mixed/adfa_www_ngids_1.npy', name='ADFA_WWW_NGIDS_1')
+bosc_adfa_data_reader = lambda: BoscDataReader('data/mixed/adfa_ngids_www_bosc_equalized_ranged.npy', name='adfa_ngids_www_bosc_equalized_ranged')
+data_readers = [bosc_adfa_data_reader]
 models_creators = [
     # lambda _: IsolationForestAdapter(), lambda _: LocalOutlierFactorAdapter(), lambda _: OneClassSVMAdapter(),
     # lambda _: COPODAdapter(), lambda _: SUODAdapter(),
-    lambda input_features: AE(input_features),
-    lambda input_features: VAE(input_features),
+    # lambda input_features: AE(input_features),
+    # lambda input_features: VAE(input_features),
     # lambda input_features: VAEpyod(input_features),
-    *our_models,
+    # *our_models,
     *our_mixed_models,
     # lambda: create_our_model_mixed(COPODAdapter(), HierarchicalLifewatchMemory())
 ]
@@ -62,7 +71,7 @@ strategies = [
     # lambda model_fn, _: SingleTaskLearnerWrapper(model_fn),
     # lambda model_fn, _: FirstTaskLearnerWrapper(model_fn),
     lambda model_fn, _: IncrementalTaskLearnerWrapper(model_fn),
-    lambda model_fn, _: IncrementalBatchLearnerWrapper(model_fn),
+    # lambda model_fn, _: IncrementalBatchLearnerWrapper(model_fn),
     # lambda model_fn, tasks_fn: KnowItAllLearnerWrapper(model_fn, learning_tasks=tasks_fn())
 ]
 

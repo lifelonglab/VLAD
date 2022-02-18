@@ -14,8 +14,8 @@ class AE(ModelBase):
     def __init__(self, input_features):
         self.params = {
             'input_size': input_features,
-            'intermediate_dim': max(3, int(input_features/2)),
-            'encoding_dim': max(2, int(input_features/4)),
+            'intermediate_dim': 4,
+            'encoding_dim': 2,
             'l_rate': 0.0001
         }
         self.model = self._create_model()
@@ -23,7 +23,7 @@ class AE(ModelBase):
     def learn(self, data):
         self.model.fit(data, data,
                        shuffle=False,
-                       epochs=256,
+                       epochs=128,
                        batch_size=256)
         predictions = self.model.predict(data)
         self.threshold = max_threshold(data, predictions)

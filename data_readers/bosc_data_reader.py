@@ -1,13 +1,14 @@
 from typing import Iterable, List
 
-import numpy as np
+import pandas as pd
+from sklearn import preprocessing
 
 from data_readers.clustered_data_reader import ClusteredDataReader
 from data_readers.data_reader import DataReader
 from task import Task
 
 
-class CreditCardDataReader(ClusteredDataReader):
+class BoscDataReader(ClusteredDataReader):
     def __init__(self, data_path, name):
         super().__init__(data_path)
         self.name = name
@@ -16,4 +17,4 @@ class CreditCardDataReader(ClusteredDataReader):
         return self.name
 
     def input_features(self) -> int:
-        return 29
+        return 341

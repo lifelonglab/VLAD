@@ -9,10 +9,10 @@ from models.model_base import ModelBase
 class VAEpyod(ModelBase):
     def __init__(self, input_features):
         self.params = {
-            'encoder_neurons': [max(3, int(input_features / 2))],
-            'decoder_neurons': [max(3, int(input_features / 2))],
-            'latent_dim': max(2, int(input_features / 4)),
-            'epochs': 5
+            'encoder_neurons': [max(3, int(input_features / 16))],
+            'decoder_neurons': [max(3, int(input_features / 16))],
+            'latent_dim': max(2, int(input_features / 32)),
+            'epochs': 128
         }
         self.model = VAE(encoder_neurons=self.params['encoder_neurons'], decoder_neurons=self.params['decoder_neurons'],
                          latent_dim=self.params['latent_dim'], epochs=self.params['epochs'])
