@@ -5,6 +5,7 @@ from keras import Input, Model
 from keras.api.keras import optimizers
 import keras.backend as K
 from keras.layers import Dense, Lambda
+import tensorflow as tf
 
 from models.model_base import ModelBase
 from models.our.models.thresholds import max_threshold
@@ -15,9 +16,9 @@ class VAE(ModelBase):
     def __init__(self, input_features):
         self.params = {
             'input_size': input_features,
-            'intermediate_dim': 4,
-            'latent_dim': 2,
-            'l_rate': 0.0001
+            'intermediate_dim': 32,
+            'latent_dim': 8,
+            'l_rate': 0.001
         }
         self.threshold = 0
         inputs, encoder = self._encoder()
@@ -30,7 +31,8 @@ class VAE(ModelBase):
 
     def vae_loss(self, x, x_decoded_mean):
         # compute the average MSE error, then scale it up, ie. simply sum on all axes
-        x = x.astype(np.float32)
+        # x = x.astype(np.float32)
+        tf.cast(x, tf.float32)
         reconstruction_loss = K.sum(K.square(x - x_decoded_mean))
         # compute the KL loss
         kl_loss = - 0.5 * K.sum(1 + self.z_log_var - K.square(self.z_mean) - K.square(K.exp(self.z_log_var)), axis=-1)
@@ -77,7 +79,7 @@ class VAE(ModelBase):
         self.vae_model.fit(data, data,
                            shuffle=False,
                            epochs=128,
-                           batch_size=256)
+                           batch_size=64)
         predictions = self.vae_model.predict(data)
         self.threshold = max_threshold(data, predictions)
 
@@ -87,7 +89,7 @@ class VAE(ModelBase):
         return [1 if e > self.threshold else 0 for e in errors], errors
 
     def name(self):
-        return 'VAE'
+        return 'VAE_lr_0.001'
 
     def parameters(self) -> Dict:
         return self.params

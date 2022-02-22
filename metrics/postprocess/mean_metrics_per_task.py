@@ -9,6 +9,6 @@ class MeanMetricsPerTask:
         processed_results = {}
 
         for learned_task, task_results in input_results.items():
-            processed_results[learned_task] = {metric: mean(values[metric]) for values in task_results.values() for
+            processed_results[learned_task] = {metric: mean([values[metric] for values in task_results.values()]) for
                                                metric in base_metrics}
         return processed_results

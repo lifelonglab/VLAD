@@ -6,9 +6,10 @@ import seaborn as sns
 
 def plot_metric_in_strategy(df, metric, out_dir, dataset, strategy):
     metrics_set = [metric, f'{metric}_bwt', f'{metric}_forward_transfer']
+    # metrics_set = [metric]
     metrics_ranges = [(0, 1), (-1, 1), (0, 1)]
 
-    f, axes = plt.subplots(len(metrics_set), 1, figsize=(7, 10), sharex=True)
+    f, axes = plt.subplots(max(len(metrics_set), 2), 1, figsize=(7, 10), sharex=True)
 
     for ax, m, metric_range in zip(axes, metrics_set, metrics_ranges):
         sns.barplot(x=df['pretty_name'], y=df[m], ax=ax)

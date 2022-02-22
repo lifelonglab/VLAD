@@ -7,7 +7,7 @@ from models.model_base import ModelBase
 
 class COPODAdapter(ModelBase):
     def __init__(self):
-        self.copod = COPOD(contamination=0.00001)
+        self.copod = COPOD(contamination=0.01)
 
     def name(self):
         return 'COPOD'
@@ -16,7 +16,7 @@ class COPODAdapter(ModelBase):
         self.copod.fit(data)
 
     def predict(self, data, task_name=None):
-        return self.copod.predict(data), self.copod.decision_function(data)
+        return self.copod.predict(data), self.copod.predict_proba(data)[:, 1]
 
     def parameters(self) -> Dict:
         return {'all': 'default'}

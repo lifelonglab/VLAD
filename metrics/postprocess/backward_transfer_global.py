@@ -8,6 +8,7 @@ class BackwardTransferGlobal:
 
     def process(self, input_results: SingleMetricMatrix):
         tasks_no = input_results.shape[0]
+        if tasks_no == 1: return {'bwt': 0, 'rem': 0, 'bwt+': 0}
 
         sum_bwt = 0
         for i in range(1, tasks_no):

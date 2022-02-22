@@ -17,3 +17,8 @@ TODOS:
  - real comparison, real names, parameters
  - plots
  - how much replay was provided
+
+
+- ONLY WWW
+- cluster whole data
+- cluster separately and match to closest

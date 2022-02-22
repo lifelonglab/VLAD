@@ -24,3 +24,6 @@ class Memory(ABC):
     @abstractmethod
     def samples_number(self) -> int:
         ...
+
+    def additional_measurements(self) -> Dict:
+        return {}

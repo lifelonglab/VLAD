@@ -6,6 +6,7 @@ class ForwardTransferContrastDarpaGlobal:
 
     def process(self, input_results: SingleMetricMatrix):
         tasks_no = input_results.shape[0]
+        if tasks_no == 1: return 0
 
         sum_fwt = 0
         count = 0

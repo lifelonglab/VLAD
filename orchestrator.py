@@ -3,12 +3,16 @@ import itertools
 from data_readers.adfa_data_reader import AdfaDataReader
 from data_readers.bosc_data_reader import BoscDataReader
 from data_readers.credit_card_data_reader import CreditCardDataReader
+from data_readers.energy_data_reader import EnergyDataReader
 from data_readers.mixed_ids_data_reader import MixedIdsDataReader
 from data_readers.smd_data_reader import SmdDataReader
+from data_readers.wind_rel_data_reader import WindEnergyDataReader
 from experiment import experiment
+from models.classic.always_value import AlwaysValueModel
 from models.classic.isolation_forest import IsolationForestAdapter
 from models.classic.lof import LocalOutlierFactorAdapter
 from models.classic.oc_svm import OneClassSVMAdapter
+from models.classic.random_model import RandomModel
 from models.modern.copod_adapter import COPODAdapter
 from models.modern.suod_adapter import SUODAdapter
 from models.our.cpds.always_new_cpd import AlwaysNewCPD
@@ -34,36 +38,58 @@ def create_our_model(base_model_fn, cpd_fn, memory_fn):
 
 
 our_models_base = [
-    lambda _: COPODAdapter(),
-    # lambda input_features: VAE(input_features)
+    # lambda _: COPODAdapter(),
+    lambda input_features: AE(input_features)
 ]
 our_cpds = [
-    # lambda: AlwaysNewCPD(),
-    lambda: LIFEWATCH()
+    lambda: AlwaysNewCPD(),
+    # lambda: LIFEWATCH()
 ]
 memories = [lambda: FlatMemoryWithSummarization()]
 our_models = [create_our_model(base_model_fn, cpd_fn, memory_fn) for base_model_fn, cpd_fn, memory_fn in
               itertools.product(our_models_base, our_cpds, memories)]
 
 our_mixed_models = [
-    lambda input_features: create_our_model_mixed(VAEpyod(input_features), HierarchicalLifewatchMemory()),
+    lambda input_features: create_our_model_mixed(AE(input_features), HierarchicalLifewatchMemory()),
+    # lambda input_features: create_our_model_mixed(VAE(input_features), HierarchicalLifewatchMemory()),
     # lambda _: create_our_model_mixed(COPODAdapter(), HierarchicalLifewatchMemory()),
 ]
 
-# adfa_data_reader = lambda: AdfaDataReader('data/adfa/adfa_30.npy', 'adfa_30')
+# mixed_ids_data_reader = lambda: MixedIdsDataReader('data/ngids/full_ngids.npy', name='full_ngids')
+
+# adfa_data_reader = lambda: AdfaDataReader('data/adfa/full_adfa.npy', 'full_adfa')
 # smd_data_reader = lambda: SmdDataReader()
-# credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard_flat_proportions_20.npy', name='creditcard_flat20_proportions')
-# mixed_ids_data_reader = lambda: MixedIdsDataReader('data/mixed/adfa_www_ngids_1.npy', name='ADFA_WWW_NGIDS_1')
-bosc_adfa_data_reader = lambda: BoscDataReader('data/mixed/adfa_ngids_www_bosc_equalized_ranged.npy', name='adfa_ngids_www_bosc_equalized_ranged')
-data_readers = [bosc_adfa_data_reader]
+credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard_flat_10.npy', name='creditcard_flat10')
+bosc_data_reader1 = lambda: MixedIdsDataReader('data/ngids/full_ngids.npy', name='full_ngids')
+bosc_data_reader4 = lambda: MixedIdsDataReader('data/ngids/ngids_seq_5.npy', name='ngids_seq_5')
+bosc_data_reader2 = lambda: MixedIdsDataReader('data/ngids/ngids_clustered_5.npy', name='ngids_clustered_5')
+bosc_data_reader3 = lambda: MixedIdsDataReader('data/ngids/ngids_clustered_5_closest_anomalies.npy', name='ngids_clustered_5_closest_anomalies')
+# bosc_data_reader = lambda: BoscDataReader('data/adfa/full_adfa_bosc_unscaled.npy', name='full_adfa_bosc_unscaled')
+
+# energy_data_reader = lambda: EnergyDataReader('data/energy/energy_pv_seq.npy')
+wind_energy_data_reader = lambda: WindEnergyDataReader('data/energy/wind_nrel_seq.npy')
+
+
+data_readers = [
+    credit_card_data_reader,
+    # wind_energy_data_reader,
+    bosc_data_reader1, bosc_data_reader2, bosc_data_reader3, bosc_data_reader4
+]
+
 models_creators = [
-    # lambda _: IsolationForestAdapter(), lambda _: LocalOutlierFactorAdapter(), lambda _: OneClassSVMAdapter(),
-    # lambda _: COPODAdapter(), lambda _: SUODAdapter(),
-    # lambda input_features: AE(input_features),
+    # lambda _: IsolationForestAdapter(),
+    # lambda _: LocalOutlierFactorAdapter(),
+    # lambda _: OneClassSVMAdapter(),
+    # lambda _: RandomModel(),
+    # lambda _: COPODAdapter(),
+    # lambda _: SUODAdapter(),
+    # lambda _: AlwaysValueModel(0),
+    # lambda _: AlwaysValueModel(1),
+    lambda input_features: AE(input_features),
     # lambda input_features: VAE(input_features),
     # lambda input_features: VAEpyod(input_features),
     # *our_models,
-    *our_mixed_models,
+    # *our_mixed_models,
     # lambda: create_our_model_mixed(COPODAdapter(), HierarchicalLifewatchMemory())
 ]
 print('models-creator', models_creators)

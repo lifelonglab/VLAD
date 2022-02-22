@@ -52,3 +52,6 @@ class HierarchicalLifewatchMemory(CPD, Memory):
             new_distributions[dist_id] = summarized_data.tolist()
 
         self.lifewatch.set_distributions(new_distributions)
+
+    def additional_measurements(self) -> Dict:
+        return {'concepts': len(self.lifewatch.distributions)}

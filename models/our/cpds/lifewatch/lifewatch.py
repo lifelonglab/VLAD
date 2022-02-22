@@ -8,7 +8,7 @@ from models.our.cpds.lifewatch.wasserstein import wassertein_distance
 
 
 class LIFEWATCH(CPD):
-    def __init__(self, threshold_ratio=2, sample_size=1, size_limit=30, min_dist_size=10):
+    def __init__(self, threshold_ratio=5, sample_size=1, size_limit=30, min_dist_size=50):
         self.threshold_ratio = threshold_ratio
         self.sample_size = sample_size
         self.size_limit = size_limit

@@ -59,7 +59,9 @@ def process_global_to_csv(path: Path):
 
 
 if __name__ == '__main__':
-    dataset = 'creditcard_flat50'
-    path = Path(f'out/results/{dataset}')
-    print(path.exists())
-    process_global_to_csv(path)
+    # datasets = ['full_adfa', 'full_adfa_bosc', 'full_adfa_bosc_unscaled']
+    datasets = ['full_ngids', 'ngids_seq_5', 'ngids_clustered_5', 'ngids_clustered_5_closest_anomalies']
+    datasets = ['energy_pv']
+    for dataset in datasets:
+        path = Path(f'out/results/{dataset}')
+        process_global_to_csv(path)

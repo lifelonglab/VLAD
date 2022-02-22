@@ -4,6 +4,8 @@ from metrics.tasks_matrix.metrics_matrix_per_task import SingleMetricMatrix
 class PerformanceMaintenanceDarpa:
     def process(self, input_results: SingleMetricMatrix):
         tasks_no = input_results.shape[0]
+        if tasks_no == 1: return 0
+
         sum_pm = 0
         count = 0
 

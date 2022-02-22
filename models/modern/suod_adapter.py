@@ -16,7 +16,7 @@ class SUODAdapter(ModelBase):
         self.suod.fit(data)
 
     def predict(self, data, task_name=None):
-        return self.suod.predict(data), self.suod.decision_function(data)
+        return self.suod.predict(data), self.suod.predict_proba(data)[:, 1]
 
     def parameters(self) -> Dict:
         return {'all': 'default'}

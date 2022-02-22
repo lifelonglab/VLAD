@@ -24,6 +24,8 @@ class OurModel(ModelBase):
         self.time_measurement = OurModelTimeMeasurement()
         self.ever_trained = False
 
+        self.iteration = 0
+
     def learn(self, data):
         self.time_measurement.reset()
         self.time_measurement.start_cpd()
@@ -41,6 +43,9 @@ class OurModel(ModelBase):
         self.time_measurement.finish_memory_management()
 
         # train each N iterations # forced sleep
+        self.iteration += 1
+        if self.iteration % 3 == 0:
+            self._retrain_model(data)
 
     def predict(self, data, task_name=None):
         return self.model.predict(data)
@@ -71,7 +76,8 @@ class OurModel(ModelBase):
         self.model.learn(retrain_data)  # or if there are too many iterations without change
 
     def additional_measurements(self) -> Dict:
-        return {'memory_samples_number': self.memory.samples_number(), 'phases_times': self.time_measurement.results()}
+        return {'memory_samples_number': self.memory.samples_number(), 'phases_times': self.time_measurement.results(),
+                'memory': self.memory.additional_measurements()}
 
 
 def create_our_model_mixed(model, cpd_memory):
