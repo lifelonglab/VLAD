@@ -32,20 +32,20 @@ class OurModel(ModelBase):
         cps = self.cpd.detect_cp(data)
         self.time_measurement.finish_cpd()
 
-        if len(cps) > 0 or not self.ever_trained:
-            self.time_measurement.start_training()
-            self._retrain_model(data)
-            self.time_measurement.finish_training()
-            self.ever_trained = True
+        # if len(cps) > 0 or not self.ever_trained:
+        self.time_measurement.start_training()
+        self._retrain_model(data)
+        self.time_measurement.finish_training()
+        self.ever_trained = True
 
         self.time_measurement.start_memory_management()
         self._update_memory(cps, data)
         self.time_measurement.finish_memory_management()
 
         # train each N iterations # forced sleep
-        self.iteration += 1
-        if self.iteration % 3 == 0:
-            self._retrain_model(data)
+        # self.iteration += 1
+        # if self.iteration % 3 == 0:
+        #     self._retrain_model(data)
 
     def predict(self, data, task_name=None):
         return self.model.predict(data)

@@ -11,8 +11,8 @@ from models.our.memories.summarization.pyramid_calculator import compute_pyramid
 
 
 class HierarchicalLifewatchMemory(CPD, Memory):
-    def __init__(self, max_samples=1000):
-        self.lifewatch = LIFEWATCH(size_limit=0)
+    def __init__(self, max_samples=3_000, threshold_ratio=2):
+        self.lifewatch = LIFEWATCH(size_limit=0, threshold_ratio=threshold_ratio)
         self.hierarchy = HierarchicalOrganization()
         self.max_samples = max_samples
 
@@ -20,7 +20,7 @@ class HierarchicalLifewatchMemory(CPD, Memory):
         return self.lifewatch.detect_cp(data)
 
     def name(self) -> str:
-        return f'Hierarchical_LIFEWATCH_limit_{self.max_samples}'
+        return f'Hierarchical_LIFEWATCH_fast_limit_{self.max_samples}_p{str(self.lifewatch.threshold_ratio)}'
 
     def params(self) -> Dict:
         return {**self.lifewatch.params(), 'max_samples': self.max_samples}

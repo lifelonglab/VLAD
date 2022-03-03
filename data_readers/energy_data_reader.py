@@ -10,7 +10,7 @@ class EnergyDataReader(ClusteredDataReader):
         super().__init__(file)
 
     def dataset_id(self) -> str:
-        return 'energy_pv'
+        return 'energy_pv_hours'
 
     def input_features(self) -> int:
-        return 16
+        return 14

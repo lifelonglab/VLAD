@@ -12,13 +12,13 @@ from models.our.models.thresholds import max_threshold
 from models.our.utils import mse
 
 
-class VAE(ModelBase):
+class VAE_Adfa(ModelBase):
     def __init__(self, input_features):
         self.params = {
             'input_size': input_features,
-            'intermediate_dim': max(8, int(input_features/8)),
+            'intermediate_dim': max(3, int(input_features/8)),
             'latent_dim': max(4, int(input_features/32)),
-            'l_rate': 0.001
+            'l_rate': 0.01
         }
         self.threshold = 0
         inputs, encoder = self._encoder()
@@ -46,9 +46,9 @@ class VAE(ModelBase):
         latent_dim = self.params['latent_dim']
 
         inputs = Input(shape=input_shape, name='encoder_input')
-        x = Dense(intermediate_dim, activation='relu')(inputs)
-        z_mean = Dense(latent_dim, name='z_mean')(x)
-        z_log_var = Dense(latent_dim, name='z_log_var')(x)
+        # x = Dense(intermediate_dim, activation='relu')(inputs)
+        z_mean = Dense(latent_dim, name='z_mean')(inputs)
+        z_log_var = Dense(latent_dim, name='z_log_var')(inputs)
         # use the reparameterization trick and get the output from the sample() function
         z = Lambda(self._sample, output_shape=(latent_dim,), name='z')([z_mean, z_log_var])
         encoder = Model(inputs, z, name='encoder')
@@ -60,8 +60,8 @@ class VAE(ModelBase):
         latent_dim = self.params['latent_dim']
 
         latent_inputs = Input(shape=(latent_dim,), name='z_sampling')
-        x = Dense(intermediate_dim, activation='relu')(latent_inputs)
-        outputs = Dense(input_shape, activation='sigmoid')(x)
+        # x = Dense(intermediate_dim, activation='relu')(latent_inputs)
+        outputs = Dense(input_shape, activation='sigmoid')(latent_inputs)
         # Instantiate the decoder model:
         decoder = Model(latent_inputs, outputs, name='decoder')
         return decoder
@@ -89,7 +89,7 @@ class VAE(ModelBase):
         return [1 if e > self.threshold else 0 for e in errors], errors
 
     def name(self):
-        return 'VAE_2'
+        return 'VAE_adfa'
 
     def parameters(self) -> Dict:
         return self.params

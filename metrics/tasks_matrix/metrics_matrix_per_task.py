@@ -9,7 +9,7 @@ from metrics.metric_utils import prec_rec_f1
 from metrics.tasks_matrix.predictions_collector import CollectedResults, PredictionsDict
 
 BaseMetric = Literal['precision', 'recall', 'f1', 'roc_auc', 'accuracy', 'pr_auc']
-base_metrics: List[BaseMetric] = ['precision', 'recall', 'f1', 'roc_auc', 'accuracy', 'pr_auc']
+base_metrics: List[BaseMetric] = ['roc_auc', 'precision', 'recall', 'f1', 'accuracy', 'pr_auc']
 
 
 class BaseMetricsResults(TypedDict):

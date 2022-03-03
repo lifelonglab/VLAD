@@ -8,7 +8,7 @@ from models.our.cpds.lifewatch.wasserstein import wassertein_distance
 
 
 class LIFEWATCH(CPD):
-    def __init__(self, threshold_ratio=5, sample_size=1, size_limit=30, min_dist_size=50):
+    def __init__(self, threshold_ratio=1.75, sample_size=4, size_limit=30, min_dist_size=50):
         self.threshold_ratio = threshold_ratio
         self.sample_size = sample_size
         self.size_limit = size_limit
@@ -19,19 +19,26 @@ class LIFEWATCH(CPD):
         self.is_creating_new_dist = True
         self.current_dist = None
 
+        self.batch_no = 0
+
     def detect_cp(self, batch: np.array) -> List[ChangePoint]:
         cps: List[ChangePoint] = []
         for mini_batch_id, mini_batch in enumerate(iterate_batches(batch, self.sample_size)):
             if len(mini_batch) != self.sample_size:
                 continue
+            self.batch_no += 1
+
+
             if self.is_creating_new_dist:
                 dist_id = len(self.distributions) - 1
                 self.distributions[dist_id].extend(mini_batch)
                 if len(self.distributions[dist_id]) >= self.min_dist_size:
                     self.update_threshold(dist_id)
-                    self.is_creating_new_dist = False
                     self.current_dist = dist_id
+                    self.is_creating_new_dist = False
             else:
+                if self.batch_no % 5 != 0:
+                    continue
                 ratios = {dist_id: wassertein_distance(mini_batch, np.array(dist)) / self.thresholds[dist_id] for dist_id, dist
                           in self.distributions.items()}
                 current_ratio = ratios[self.current_dist]

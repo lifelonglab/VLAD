@@ -10,7 +10,7 @@ class WindEnergyDataReader(ClusteredDataReader):
         super().__init__(file)
 
     def dataset_id(self) -> str:
-        return 'wind_rel'
+        return 'wind_rel_wind'
 
     def input_features(self) -> int:
-        return 11
+        return 10
