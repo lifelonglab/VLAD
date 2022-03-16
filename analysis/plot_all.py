@@ -3,16 +3,12 @@ from pathlib import Path
 from analysis.plots.plot_avg_metric_all_methods_over_time import plot_avg_metric_all_methods_over_time, \
     plot_avg_metric_all_methods_over_time_per_task
 from analysis.plots.plot_metric_in_strategy import plot_metric_in_strategy
-from analysis.plots.plot_metric_over_time import plot_metric_for_task_over_time, plot_avg_metric_over_time
 from analysis.plots.plot_times import plot_training_times
-from analysis.plots.pretty_name import pretty_name
+from analysis.plots.plot_utils import filter_by_strategy
 from analysis.plots.results_loader import load_results
 import seaborn as sns
 
 sns.set_theme(style="darkgrid")
-
-def filter_by_strategy(df, strategy):
-    return df.loc[df['strategy'] == strategy]
 
 metrics = ['pr_auc', 'roc_auc', 'precision', 'recall']
 

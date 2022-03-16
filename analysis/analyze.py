@@ -62,11 +62,12 @@ if __name__ == '__main__':
     # datasets = ['full_adfa', 'full_adfa_bosc', 'full_adfa_bosc_unscaled']
     datasets = ['full_ngids', 'ngids_seq_5', 'ngids_clustered_5', 'ngids_clustered_5_closest_anomalies']
     datasets = [
-        'energy_pv_hours',
-        'wind_rel_wind',
-        'creditcard_flat10',
-        'creditcard_5x5',
+        # 'energy_pv_hours',
+        # 'wind_rel_wind',
+        # 'creditcard_flat10',
+        # 'creditcard_5x5',
         # 'unsw_clustered_5_closest_anomaly'
+        'www_adfa_ngids_clustered',
         # 'www_clustered_5_closest_anomalies'
     ]
     for dataset in datasets:

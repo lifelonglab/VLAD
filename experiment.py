@@ -1,3 +1,5 @@
+import time
+
 from data_readers.adfa_data_reader import AdfaDataReader
 from data_readers.credit_card_data_reader import CreditCardDataReader
 from data_readers.data_reader import DataReader
@@ -24,6 +26,7 @@ from strategies.strategy import Strategy
 
 def experiment(data_reader: DataReader, model: Strategy):
     # init
+    start_time = time.time()
     results_collector = PredictionsCollector()
     time_measurement = TimeMeasurement()
     other_measurements = OtherValuesMeasurement()
@@ -53,8 +56,10 @@ def experiment(data_reader: DataReader, model: Strategy):
     # postprocess metrics
     collected_results = results_collector.results()
     processed_results = process_results(collected_results)
+    exp_time = time.time() - start_time
+    time_measurement_extended = {**time_measurement.results(), **{'experiment_time': exp_time}}
     save_results(model, data_reader, processed_results=processed_results, collected_results=collected_results,
-                 times=time_measurement.results(), other_measurements=other_measurements.results())
+                 times=time_measurement_extended, other_measurements=other_measurements.results())
 
 
 if __name__ == '__main__':

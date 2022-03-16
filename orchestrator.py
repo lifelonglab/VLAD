@@ -55,21 +55,47 @@ our_models = [create_our_model(base_model_fn, cpd_fn, memory_fn) for base_model_
               itertools.product(our_models_base, our_cpds, memories)]
 
 generated_mixed_models = []
-for ratio in [1.5, 2, 2.5, 3, 3.5, 4]:
-    for size in [500, 1000, 2000, 3000, 5000, 7500, 10000]:
-        generated_mixed_models.append(lambda input_features: create_our_model_mixed(VAE(input_features),
-                                                                                    HierarchicalLifewatchMemory(
-                                                                                        max_samples=size,
-                                                                                        threshold_ratio=ratio)))
+for ratio in [
+    1.5,
+    # 2,
+    # 2.5,
+    # 3
+    ]:
+    for size in [
+        # 3000,
+        5000,
+        10000]:
+        for steps in [
+            5000,
+            15000]:
+            for subconcept_ratio in [
+                2,
+                5]:
+                generated_mixed_models.append(
+                    lambda input_features, max_samples=size, threshold_ratio=ratio, subconcept_threshold_ratio=subconcept_ratio, steps_in=steps:
+                    create_our_model_mixed(VAE(input_features),
+                                           HierarchicalLifewatchMemory(
+                                               max_samples=max_samples,
+                                               threshold_ratio=threshold_ratio,
+                                               subconcept_threshold_ratio=subconcept_threshold_ratio),
+                                           steps=steps_in))
+
+our_ablation_limited_models = [
+    lambda input_features: create_our_model_mixed(VAE(input_features), HierarchicalLifewatchMemory(
+        max_samples=5000, threshold_ratio=2.5, subconcept_threshold_ratio=5, disable_cpd=True), steps=15000),
+    lambda input_features: create_our_model_mixed(VAE(input_features), HierarchicalLifewatchMemory(
+        max_samples=5000, threshold_ratio=2.5, subconcept_threshold_ratio=5, disable_replay=True), steps=15000)
+]
 
 our_mixed_models = [
     # lambda input_features: create_our_model_mixed(AE(input_features), HierarchicalLifewatchMemory()),
-    # lambda input_features: create_our_model_mixed(VAE(input_features), HierarchicalLifewatchMemory(threshold_ratio=1.5)),
-    # lambda input_features: create_our_model_mixed(VAE(input_features), HierarchicalLifewatchMemory(threshold_ratio=2)),
     lambda input_features: create_our_model_mixed(VAE(input_features),
-                                                  HierarchicalLifewatchMemory(max_samples=10000, threshold_ratio=2)),
+                                                  HierarchicalLifewatchMemory(threshold_ratio=1.5)),
+    # lambda input_features: create_our_model_mixed(VAE(input_features), HierarchicalLifewatchMemory(threshold_ratio=2)),
     # lambda input_features: create_our_model_mixed(VAE(input_features),
-                                                  # HierarchicalLifewatchMemory(threshold_ratio=2.5)),
+    #                                               HierarchicalLifewatchMemory(max_samples=10000, threshold_ratio=2)),
+    # lambda input_features: create_our_model_mixed(VAE(input_features),
+    # HierarchicalLifewatchMemory(threshold_ratio=2.5)),
     # lambda input_features: create_our_model_mixed(VAE(input_features),
     #                                               HierarchicalLifewatchMemory(max_samples=10000, threshold_ratio=2.5)),
     # lambda input_features: create_our_model_mixed(VAE(input_features), HierarchicalLifewatchMemory(threshold_ratio=3)),
@@ -110,18 +136,18 @@ www_data_reader = lambda: MixedIdsDataReader('data/www/www_clustered_5_closest_a
 adfa_data_reader = lambda: MixedIdsDataReader('data/adfa/adfa_clustered_5_closest_anomalies.npy',
                                               name='adfa_clustered_5_closest_anomalies')
 
-unsw_data_reader = lambda: UnswDataReader('data/unsw/unsw_clustered_10_closest_anomalies.npy',
-                                          name='unsw_clustered_10_closest_anomaly')
+unsw_data_reader = lambda: UnswDataReader('data/unsw/unsw_clustered_5_closest_anomalies.npy',
+                                          name='unsw_clustered_5_closest_anomaly')
 
 energy_data_reader = lambda: EnergyDataReader('data/energy/energy_pv_seq_hours.npy')
 wind_energy_data_reader = lambda: WindEnergyDataReader('data/energy/wind_nrel_seq_wind.npy')
 
 data_readers = [
-    # credit_card_data_reader,
+    credit_card_data_reader,
     # energy_data_reader,
     # wind_energy_data_reader,
     # www_data_reader,
-    unsw_data_reader,
+    # unsw_data_reader,
     # adfa_data_reader,
     # bosc_data_reader3,
     # bosc_data_reader1,
@@ -129,7 +155,6 @@ data_readers = [
     # smd_data_reader,
     # mixed_ids_data_reader
 ]
-
 models_creators = [
     # lambda _: IsolationForestAdapter(),
     # lambda _: LocalOutlierFactorAdapter(),
@@ -137,18 +162,20 @@ models_creators = [
     # lambda _: RandomModel(),
     # lambda _: COPODAdapter(),
     # lambda _: SUODAdapter(),
+    # lambda input_features: VAE(input_features),
     # lambda _: AlwaysValueModel(0),
     # lambda _: AlwaysValueModel(1),
     # lambda input_features: AE(input_features),
-    # lambda input_features: VAE(input_features),
     # lambda input_features: VAEpyod(input_features),
     # *our_models,
     # *our_mixed_models,
     *generated_mixed_models,
+    # *our_ablation_limited_models,
     # *our_adfa_mixed_models,
     # lambda: create_our_model_mixed(COPODAdapter(), HierarchicalLifewatchMemory())
     # lambda input_features: VAE_Adfa(input_features)
 ]
+
 print('models-creator', models_creators)
 strategies = [
     # lambda model_fn, _: SingleTaskLearnerWrapper(model_fn),
@@ -161,8 +188,6 @@ strategies = [
 for data_reader_fn in data_readers:
     for strategy_fn in strategies:
         for model_fn in models_creators:
-            print(strategy_fn)
-            print(model_fn(0).name())
             data_reader = data_reader_fn()
             final_model = strategy_fn(lambda: model_fn(data_reader.input_features()),
                                       lambda: list(data_reader.iterate_tasks()))

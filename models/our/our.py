@@ -16,45 +16,57 @@ from models.our.time_measurement import OurModelTimeMeasurement
 
 
 class OurModel(ModelBase):
-    def __init__(self, model, cpd, memory):
+    def __init__(self, model, cpd, memory, retrain_after_steps=1000):
         self.model: ModelBase = model
         self.cpd: CPD = cpd
         self.memory: Memory = memory
 
+        self.retrain_after_steps = retrain_after_steps
+
         self.time_measurement = OurModelTimeMeasurement()
         self.ever_trained = False
+        self.steps_from_last_retrain = 0
 
         self.iteration = 0
 
     def learn(self, data):
+        should_retrain = not self.ever_trained
+
         self.time_measurement.reset()
         self.time_measurement.start_cpd()
         cps = self.cpd.detect_cp(data)
+        if len(cps) > 0:
+            should_retrain = True
+        self.steps_from_last_retrain += len(data)
         self.time_measurement.finish_cpd()
-
-        # if len(cps) > 0 or not self.ever_trained:
-        self.time_measurement.start_training()
-        self._retrain_model(data)
-        self.time_measurement.finish_training()
-        self.ever_trained = True
 
         self.time_measurement.start_memory_management()
         self._update_memory(cps, data)
+        self.memory.organize()
+        if self.memory.should_summarize:
+            self.memory.summarize()
+            should_retrain = True
         self.time_measurement.finish_memory_management()
 
-        # train each N iterations # forced sleep
-        # self.iteration += 1
-        # if self.iteration % 3 == 0:
-        #     self._retrain_model(data)
+        if self.steps_from_last_retrain >= self.retrain_after_steps:
+            should_retrain = True
+
+        if should_retrain:
+            self.time_measurement.start_training()
+            self._retrain_model(data)
+            self.time_measurement.finish_training()
+            self.ever_trained = True
+            self.steps_from_last_retrain = 0
 
     def predict(self, data, task_name=None):
         return self.model.predict(data)
 
     def name(self):
-        return f'OurModel_{self.model.name()}_{self.cpd.name()}_{self.memory.name()}'
+        return f'OurModel_{self.model.name()}_{self.memory.name()}_steps_{self.retrain_after_steps}'
 
     def parameters(self) -> Dict:
-        return {'model': self.model.parameters(), 'cpd': self.cpd.params(), 'memory': self.memory.params()}
+        return {'model': self.model.parameters(), 'cpd': self.cpd.params(), 'memory': self.memory.params(),
+                'retrain_after_steps': self.retrain_after_steps}
 
     def _update_memory(self, cps: List[ChangePoint], data):
         if len(cps) > 0:
@@ -80,5 +92,5 @@ class OurModel(ModelBase):
                 'memory': self.memory.additional_measurements()}
 
 
-def create_our_model_mixed(model, cpd_memory):
-    return OurModel(model, cpd=cpd_memory, memory=cpd_memory)
+def create_our_model_mixed(model, cpd_memory, steps):
+    return OurModel(model, cpd=cpd_memory, memory=cpd_memory, retrain_after_steps=steps)

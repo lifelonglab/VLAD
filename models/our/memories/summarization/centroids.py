@@ -7,6 +7,8 @@ from sklearn.cluster import KMeans
 
 def k_means_summarization(data, max_data_length):
     n_clusters = 5
+    if len(data) < n_clusters:
+        return np.array(data[max_data_length:])
     single_cluster_length = math.floor(max_data_length / n_clusters)
     clustering_model = KMeans(n_clusters=n_clusters)
     clustering_model.fit(data)

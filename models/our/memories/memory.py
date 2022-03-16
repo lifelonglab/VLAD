@@ -25,5 +25,14 @@ class Memory(ABC):
     def samples_number(self) -> int:
         ...
 
+    def organize(self):
+        pass
+
+    def should_summarize(self) -> bool:
+        pass
+
+    def summarize(self):
+        pass
+
     def additional_measurements(self) -> Dict:
         return {}

@@ -37,8 +37,8 @@ class LIFEWATCH(CPD):
                     self.current_dist = dist_id
                     self.is_creating_new_dist = False
             else:
-                if self.batch_no % 5 != 0:
-                    continue
+                # if self.batch_no % 5 != 0:
+                #     continue
                 ratios = {dist_id: wassertein_distance(mini_batch, np.array(dist)) / self.thresholds[dist_id] for dist_id, dist
                           in self.distributions.items()}
                 current_ratio = ratios[self.current_dist]
