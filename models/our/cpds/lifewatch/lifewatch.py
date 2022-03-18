@@ -66,7 +66,11 @@ class LIFEWATCH(CPD):
     def update_threshold(self, dist_id):
         dist = np.array(self.distributions[dist_id])
         values = [wassertein_distance(np.array(s), dist) for s in iterate_batches(dist, self.sample_size)]
-        self.thresholds[dist_id] = np.max(values) * self.threshold_ratio
+        try :
+            self.thresholds[dist_id] = np.max(values) * self.threshold_ratio
+        except Exception as e:
+            print(e)
+            exit()
 
     def set_distributions(self, distributions: Dict[any, List]):
         self.distributions = distributions

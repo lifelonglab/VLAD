@@ -56,14 +56,14 @@ our_models = [create_our_model(base_model_fn, cpd_fn, memory_fn) for base_model_
 
 generated_mixed_models = []
 for ratio in [
-    1.5,
-    # 2,
+    # 1.5,
+    2,
     # 2.5,
     # 3
     ]:
     for size in [
         # 3000,
-        5000,
+        # 5000,
         10000]:
         for steps in [
             5000,
@@ -159,7 +159,7 @@ models_creators = [
     # lambda _: IsolationForestAdapter(),
     # lambda _: LocalOutlierFactorAdapter(),
     # lambda _: OneClassSVMAdapter(),
-    # lambda _: RandomModel(),
+    # # lambda _: RandomModel(),
     # lambda _: COPODAdapter(),
     # lambda _: SUODAdapter(),
     # lambda input_features: VAE(input_features),

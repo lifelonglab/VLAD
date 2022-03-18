@@ -1,3 +1,5 @@
+import numpy as np
+
 from metrics.tasks_matrix.metrics_matrix_per_task import SingleMetricMatrix
 
 
@@ -8,9 +10,9 @@ class ForwardTransferGlobal:
         tasks_no = input_results.shape[0]
         if tasks_no == 1: return 0
 
-        sum_fwt = 0
+        values = []
         for j in range(tasks_no):
             for i in range(j):
-                sum_fwt += input_results[i][j]
+                values.append(input_results[i][j])
 
-        return sum_fwt / (tasks_no * (tasks_no - 1) / 2)
+        return {'mean': np.mean(values), 'std': np.std(values)}

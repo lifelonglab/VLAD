@@ -66,6 +66,8 @@ class HierarchicalLifewatchMemory(CPD, Memory):
             summarized_data = k_means_summarization(data, max_data_length=sizes[dist_id])
             new_distributions[dist_id] = summarized_data.tolist()
 
+        # new_distributions = {k: d for k, d in new_distributions.items() if len(d) >= 5}
+        #
         self.lifewatch.set_distributions(new_distributions)
 
     def additional_measurements(self) -> Dict:

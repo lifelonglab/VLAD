@@ -10,12 +10,19 @@ class BackwardTransferGlobal:
         tasks_no = input_results.shape[0]
         if tasks_no == 1: return {'bwt': 0, 'rem': 0, 'bwt+': 0}
 
-        sum_bwt = 0
+        values = []
         for i in range(1, tasks_no):
             for j in range(0, i):
-                sum_bwt += input_results[i][j] - input_results[j][j]
+                values.append(input_results[i][j] - input_results[j][j])
 
-        bwt = sum_bwt / (tasks_no * (tasks_no + 1) / 2)
+
+        bwt = np.mean(values)
         rem = 1 - abs(min(bwt, 0))
         bwt_plus = max(bwt, 0)
-        return {'bwt': bwt, 'rem': rem, 'bwt+': bwt_plus}
+
+        print(f'Standard calculated bwt', bwt)
+        print(f'Numpy calculated bwt', np.mean(values))
+        return {'bwt': {
+            'mean': bwt,
+            'std': np.std(values)
+        }, 'rem': rem, 'bwt+': bwt_plus}
