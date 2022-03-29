@@ -10,20 +10,24 @@ import seaborn as sns
 
 sns.set_theme(style="darkgrid")
 
-metrics = ['pr_auc', 'roc_auc', 'precision', 'recall']
+metrics = [
+    # 'pr_auc',
+    'roc_auc',
+    # 'precision', 'recall'
+]
 
 strategy = 'IncrementalTaskLearner'
 # strategy = 'IncrementalBatchLearner'
 # datasets = ['creditcard_flat10', 'ngids_6', 'ngids_bosc_6', 'www_bosc_6_equalized_fixed']
 # datasets = ['full_adfa', 'full_adfa_bosc', 'full_adfa_bosc_unscaled']
-datasets = ['ngids_seq_5', 'ngids_clustered_5', 'ngids_clustered_5_closest_anomalies']
+# datasets = ['ngids_seq_5', 'ngids_clustered_5', 'ngids_clustered_5_closest_anomalies']
 # datasets = ['full_ngids']
-# datasets = [
+datasets = [
 #     'creditcard_flat10',
-#     'wind_rel_wind',
+    'wind_rel_wind',
 #     'energy_pv_hours',
 #     'creditcard_5x5'
-# ]
+]
 
 for dataset in datasets:
     for metric in metrics:
@@ -33,7 +37,7 @@ for dataset in datasets:
 
         results_df = filter_by_strategy(load_results(dataset, results_type='results'), strategy)
         plot_metric_in_strategy(results_df, metric, out_dir, dataset, strategy)
-
+        exit()
         times_df = filter_by_strategy(load_results(dataset, results_type='times'), strategy)
 
         plot_training_times(times_df, out_dir, dataset, strategy)

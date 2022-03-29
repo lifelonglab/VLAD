@@ -9,11 +9,14 @@ from metrics.tasks_matrix.metrics_matrix_per_task import base_metrics
 
 def _extract_for(global_results, metric, results_store):
     metric_results = global_results[metric]
-    results_store[metric].append(metric_results['value'])
-    results_store[f'{metric}_bwt'].append(metric_results['backward_transfer']['bwt'])
+    results_store[f'{metric}'].append(metric_results['value']['mean'])
+    results_store[f'{metric}_std'].append(metric_results['value']['std'])
+    results_store[f'{metric}_bwt'].append(metric_results['backward_transfer']['bwt']['mean'])
+    results_store[f'{metric}_bwt_std'].append(metric_results['backward_transfer']['bwt']['std'])
     results_store[f'{metric}_rem'].append(metric_results['backward_transfer']['rem'])
     results_store[f'{metric}_bwt+'].append(metric_results['backward_transfer']['bwt+'])
-    results_store[f'{metric}_forward_transfer'].append(metric_results['forward_transfer'])
+    results_store[f'{metric}_forward_transfer'].append(metric_results['forward_transfer']['mean'])
+    results_store[f'{metric}_forward_transfer_std'].append(metric_results['forward_transfer']['std'])
     # results_store[f'{metric}_forward_transfer_darpa'].append(metric_results['forward_transfer_darpa'])
     # results_store[f'{metric}_backward_transfer_darpa'].append(metric_results['backward_transfer_darpa'])
     # results_store[f'{metric}_performance_maintenance_darpa'].append(metric_results['performance_maintenance_darpa'])
@@ -63,12 +66,18 @@ if __name__ == '__main__':
     datasets = ['full_ngids', 'ngids_seq_5', 'ngids_clustered_5', 'ngids_clustered_5_closest_anomalies']
     datasets = [
         # 'energy_pv_hours',
+        # 'energy_pv_hours_short',
         # 'wind_rel_wind',
+        # 'wind_short',
         # 'creditcard_flat10',
         # 'creditcard_5x5',
         # 'unsw_clustered_5_closest_anomaly'
-        'www_adfa_ngids_clustered',
-        # 'www_clustered_5_closest_anomalies'
+        # 'unsw_clustered_10_closest_anomaly'
+        # 'www_adfa_ngids_clustered',
+        # 'www_clustered_5_closest_anomalies',
+        'www_6x2_short'
+        # 'adfa_ngids_www'
+        # '3ids'
     ]
     for dataset in datasets:
         path = Path(f'out/results/{dataset}')

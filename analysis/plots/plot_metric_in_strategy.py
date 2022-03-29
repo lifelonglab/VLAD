@@ -12,7 +12,9 @@ def plot_metric_in_strategy(df, metric, out_dir, dataset, strategy):
     f, axes = plt.subplots(max(len(metrics_set), 2), 1, figsize=(7, 10), sharex=True)
 
     for ax, m, metric_range in zip(axes, metrics_set, metrics_ranges):
-        sns.barplot(x=df['pretty_name'], y=df[m], ax=ax)
+        std = df[f'{m}_std']
+        print(std)
+        sns.barplot(x=df['pretty_name'], y=df[m], yerr=std, ax=ax)
         if metric_range is not None:
             ax.set_ylim(*metric_range)
         ax.set(xlabel='')
