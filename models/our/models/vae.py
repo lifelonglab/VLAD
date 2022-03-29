@@ -78,8 +78,8 @@ class VAE(ModelBase):
     def learn(self, data):
         self.vae_model.fit(data, data,
                            shuffle=False,
-                           epochs=128,
-                           batch_size=64)
+                           epochs=64,
+                           batch_size=32)
         predictions = self.vae_model.predict(data)
         self.threshold = max_threshold(data, predictions)
 

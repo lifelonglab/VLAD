@@ -21,14 +21,14 @@ class HierarchicalLifewatchMemory(CPD, Memory):
 
     def detect_cp(self, data) -> List[ChangePoint]:
         if self.disable_cpd:
-            self.lifewatch.detect_cp(data)
+            self.lifewatch.add_data_without_cp(data)
             return []
         return self.lifewatch.detect_cp(data)
 
     def name(self) -> str:
         no_cpd = '_no_cpd' if self.disable_cpd else ''
         no_replay = '_no_replay' if self.disable_replay else ''
-        return f'HLW_fast_lim_{self.max_samples}_p{str(self.lifewatch.threshold_ratio)}_mf_{self.max_size_ratio}_str_{self.hierarchy.subconcept_threshold_ratio}{no_cpd}{no_replay}'
+        return f'HLW_lim_1024_{self.max_samples}_p{str(self.lifewatch.threshold_ratio)}_mf_{self.max_size_ratio}_str_{self.hierarchy.subconcept_threshold_ratio}{no_cpd}{no_replay}'
 
     def params(self) -> Dict:
         return {**self.lifewatch.params(), 'max_samples': self.max_samples, **self.hierarchy.params()}
@@ -38,7 +38,7 @@ class HierarchicalLifewatchMemory(CPD, Memory):
 
     def get_replay(self) -> np.ndarray:
         if self.disable_replay:
-            return np.empty(np.array(self.lifewatch.distributions[0]).shape)
+            return np.empty((0, *np.array(self.lifewatch.distributions[0]).shape[1:]))
         self.summarize()
         print(self.hierarchy.hierarchy)
         print(self.hierarchy.dists_by_layer())
@@ -72,3 +72,9 @@ class HierarchicalLifewatchMemory(CPD, Memory):
 
     def additional_measurements(self) -> Dict:
         return {'concepts': len(self.lifewatch.distributions), 'hierarchy': self.hierarchy.serializable_hierarchy()}
+
+    def assign(self, data):
+        return self.lifewatch.assign(data)
+
+    def distributions(self):
+        return self.lifewatch.distributions

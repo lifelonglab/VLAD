@@ -12,12 +12,12 @@ from models.our.models.thresholds import max_threshold
 from models.our.utils import mse
 
 
-class VAE(ModelBase):
-    def __init__(self, input_features):
+class VAEParams(ModelBase):
+    def __init__(self, input_features, intermediate_dim, latent_dim):
         self.params = {
             'input_size': input_features,
-            'intermediate_dim': max(8, int(input_features/8)),
-            'latent_dim': max(4, int(input_features/32)),
+            'intermediate_dim': intermediate_dim,
+            'latent_dim': latent_dim,
             'l_rate': 0.001
         }
         self.threshold = 0
@@ -76,10 +76,11 @@ class VAE(ModelBase):
         return z_mean + K.exp(0.5 * z_log_var) * epsilon
 
     def learn(self, data):
+        print('size of learning data', len(data))
         self.vae_model.fit(data, data,
                            shuffle=False,
-                           epochs=128,
-                           batch_size=64)
+                           epochs=64,
+                           batch_size=32)
         predictions = self.vae_model.predict(data)
         self.threshold = max_threshold(data, predictions)
 
@@ -89,7 +90,7 @@ class VAE(ModelBase):
         return [1 if e > self.threshold else 0 for e in errors], errors
 
     def name(self):
-        return 'VAE_2'
+        return f'VAE_Params_{self.params["intermediate_dim"]}_{self.params["latent_dim"]}'
 
     def parameters(self) -> Dict:
         return self.params

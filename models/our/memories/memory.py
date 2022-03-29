@@ -36,3 +36,9 @@ class Memory(ABC):
 
     def additional_measurements(self) -> Dict:
         return {}
+
+    def assign(self, data):
+        return []
+
+    def distributions(self) -> Dict:
+        return {}

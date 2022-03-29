@@ -6,10 +6,10 @@ from models.model_base import ModelBase
 
 
 class IsolationForestAdapter(ModelBase):
-    def __init__(self):
-        self.random_state = 42
-        self.n_estimators = 100
-        self.model = IsolationForest(random_state=self.random_state, n_estimators=self.n_estimators, contamination=0.00001)
+    def __init__(self, n_estimators=100, contamination=0.00001):
+        self.n_estimators = n_estimators
+        self.contamination = contamination
+        self.model = IsolationForest(n_estimators=self.n_estimators, contamination=0.00001)
 
     def learn(self, data):
         self.model.fit(data)
@@ -22,6 +22,6 @@ class IsolationForestAdapter(ModelBase):
 
     def parameters(self):
         return {
-            'random_state': self.random_state,
-            'n_estimators': self.n_estimators
+            'n_estimators': self.n_estimators,
+            'contamination': self.contamination
         }

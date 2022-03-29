@@ -6,8 +6,11 @@ from models.model_base import ModelBase
 
 
 class COPODAdapter(ModelBase):
-    def __init__(self):
-        self.copod = COPOD(contamination=0.01)
+    def __init__(self, contamination=0.01):
+        self.params = {
+            'contamination': contamination
+        }
+        self.copod = COPOD(contamination=self.params['contamination'])
 
     def name(self):
         return 'COPOD'
@@ -19,4 +22,4 @@ class COPODAdapter(ModelBase):
         return self.copod.predict(data), self.copod.predict_proba(data)[:, 1]
 
     def parameters(self) -> Dict:
-        return {'all': 'default'}
+        return self.params

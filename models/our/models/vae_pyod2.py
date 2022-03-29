@@ -6,13 +6,13 @@ from pyod.models.vae import VAE
 from models.model_base import ModelBase
 
 
-class VAEpyod(ModelBase):
-    def __init__(self, input_features):
+class VAEpyodParams(ModelBase):
+    def __init__(self, input_features, intermedient_dim, latent_dim):
         self.params = {
-            'encoder_neurons': [max(3, int(input_features / 16))],
-            'decoder_neurons': [max(3, int(input_features / 16))],
-            'latent_dim': max(2, int(input_features / 32)),
-            'epochs': 128
+            'encoder_neurons': [intermedient_dim],
+            'decoder_neurons': [intermedient_dim],
+            'latent_dim': latent_dim,
+            'epochs': 64
         }
         self.model = VAE(encoder_neurons=self.params['encoder_neurons'], decoder_neurons=self.params['decoder_neurons'],
                          latent_dim=self.params['latent_dim'], epochs=self.params['epochs'])
@@ -25,6 +25,7 @@ class VAEpyod(ModelBase):
 
     def predict(self, data, task_name=None) -> (np.ndarray, np.ndarray):
         try:
+            print(data)
             return self.model.predict(data), self.model.decision_function(data)
         except Exception as e:
             print(e)

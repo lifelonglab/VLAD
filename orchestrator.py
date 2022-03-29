@@ -1,6 +1,9 @@
 import itertools
 import os
 
+from best_competitor_models import best_unsw_competitors, best_wind_competitors, best_3ids_competitors, \
+    best_energy_competitors
+from best_models import wind_rel_wind_models, unsw_5_models, energy_pv_models, three_ids_models
 from data_readers.adfa_data_reader import AdfaDataReader
 from data_readers.bosc_data_reader import BoscDataReader
 from data_readers.credit_card_data_reader import CreditCardDataReader
@@ -36,7 +39,7 @@ from strategies.stl_wrapper import SingleTaskLearnerWrapper
 from functools import partial
 
 
-# os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 def create_our_model(base_model_fn, cpd_fn, memory_fn):
     return lambda input_features: OurModel(base_model_fn(input_features), cpd=cpd_fn(), memory=memory_fn())
@@ -56,14 +59,14 @@ our_models = [create_our_model(base_model_fn, cpd_fn, memory_fn) for base_model_
 
 generated_mixed_models = []
 for ratio in [
-    # 1.5,
+    1.5,
     2,
-    # 2.5,
-    # 3
+    2.5,
+    3
     ]:
     for size in [
         # 3000,
-        # 5000,
+        5000,
         10000]:
         for steps in [
             5000,
@@ -87,22 +90,6 @@ our_ablation_limited_models = [
         max_samples=5000, threshold_ratio=2.5, subconcept_threshold_ratio=5, disable_replay=True), steps=15000)
 ]
 
-our_mixed_models = [
-    # lambda input_features: create_our_model_mixed(AE(input_features), HierarchicalLifewatchMemory()),
-    lambda input_features: create_our_model_mixed(VAE(input_features),
-                                                  HierarchicalLifewatchMemory(threshold_ratio=1.5)),
-    # lambda input_features: create_our_model_mixed(VAE(input_features), HierarchicalLifewatchMemory(threshold_ratio=2)),
-    # lambda input_features: create_our_model_mixed(VAE(input_features),
-    #                                               HierarchicalLifewatchMemory(max_samples=10000, threshold_ratio=2)),
-    # lambda input_features: create_our_model_mixed(VAE(input_features),
-    # HierarchicalLifewatchMemory(threshold_ratio=2.5)),
-    # lambda input_features: create_our_model_mixed(VAE(input_features),
-    #                                               HierarchicalLifewatchMemory(max_samples=10000, threshold_ratio=2.5)),
-    # lambda input_features: create_our_model_mixed(VAE(input_features), HierarchicalLifewatchMemory(threshold_ratio=3)),
-    # lambda input_features: create_our_model_mixed(VAE(input_features),
-    #                                               HierarchicalLifewatchMemory(threshold_ratio=3.5)),
-    # lambda _: create_our_model_mixed(COPODAdapter(), HierarchicalLifewatchMemory()),
-]
 
 our_adfa_mixed_models = [
     lambda input_features: create_our_model_mixed(VAE_Adfa(input_features),
@@ -119,69 +106,72 @@ our_adfa_mixed_models = [
                                                   HierarchicalLifewatchMemory(max_samples=500, threshold_ratio=3.5)),
 ]
 
-mixed_ids_data_reader = lambda: MixedIdsDataReader('data/mixed/www_adfa_ngids_clustered.npy',
-                                                   name='www_adfa_ngids_clustered')
+three_ids_data_reader = lambda: MixedIdsDataReader('data/mixed/3ids.npy', name='3ids')
+three_ids_not_closest_data_reader = lambda: MixedIdsDataReader('data/mixed/3ids_not_closest.npy', name='3ids_not_closest')
+
+adfa_ngids_www = lambda: MixedIdsDataReader('data/mixed/adfa_ngids_www.npy',
+                                                   name='adfa_ngids_www')
 
 # adfa_data_reader = lambda: AdfaDataReader('data/adfa/full_adfa.npy', 'full_adfa')
 smd_data_reader = lambda: SmdDataReader()
-credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard_5x5.npy', name='creditcard_5x5')
+credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard_5.npy', name='creditcard_5')
 data_reader1 = lambda: MixedIdsDataReader('data/ngids/full_ngids.npy', name='full_ngids')
-data_reader4 = lambda: MixedIdsDataReader('data/ngids/ngids_seq_5.npy', name='ngids_seq_5')
-data_reader2 = lambda: MixedIdsDataReader('data/ngids/ngids_clustered_5.npy', name='ngids_clustered_5')
-data_reader3 = lambda: MixedIdsDataReader('data/ngids/ngids_clustered_5_closest_anomalies.npy',
-                                          name='ngids_clustered_5_closest_anomalies')
 
-www_data_reader = lambda: MixedIdsDataReader('data/www/www_clustered_5_closest_anomalies.npy',
-                                             name='www_clustered_5_closest_anomalies')
+
+www_data_reader = lambda: MixedIdsDataReader('data/www/www_6x2_short.npy',
+                                             name='www_6x2_short')
 adfa_data_reader = lambda: MixedIdsDataReader('data/adfa/adfa_clustered_5_closest_anomalies.npy',
                                               name='adfa_clustered_5_closest_anomalies')
 
-unsw_data_reader = lambda: UnswDataReader('data/unsw/unsw_clustered_5_closest_anomalies.npy',
-                                          name='unsw_clustered_5_closest_anomaly')
+unsw_data_reader = lambda: UnswDataReader('data/unsw/unsw_clustered_10_closest_anomalies.npy',
+                                          name='unsw_clustered_10_closest_anomaly')
 
-energy_data_reader = lambda: EnergyDataReader('data/energy/energy_pv_seq_hours.npy')
+energy_data_reader = lambda: EnergyDataReader('data/energy/energy_medium.npy', 'energy_medium')
 wind_energy_data_reader = lambda: WindEnergyDataReader('data/energy/wind_nrel_seq_wind.npy')
+wind_short_energy_data_reader = lambda: WindEnergyDataReader('data/energy/wind_short.npy', 'wind_short')
 
 data_readers = [
-    credit_card_data_reader,
-    # energy_data_reader,
+    # credit_card_data_reader,
+    energy_data_reader,
     # wind_energy_data_reader,
+    # three_ids_not_closest_data_reader
+    # three_ids_data_reader,
     # www_data_reader,
     # unsw_data_reader,
-    # adfa_data_reader,
-    # bosc_data_reader3,
-    # bosc_data_reader1,
-    # bosc_data_reader2, bosc_data_reader3, bosc_data_reader4
     # smd_data_reader,
-    # mixed_ids_data_reader
+    # mixed_ids_data_reader,
+    # adfa_ngids_www
+    # wind_short_energy_data_reader
 ]
 models_creators = [
     # lambda _: IsolationForestAdapter(),
     # lambda _: LocalOutlierFactorAdapter(),
     # lambda _: OneClassSVMAdapter(),
-    # # lambda _: RandomModel(),
     # lambda _: COPODAdapter(),
     # lambda _: SUODAdapter(),
     # lambda input_features: VAE(input_features),
-    # lambda _: AlwaysValueModel(0),
-    # lambda _: AlwaysValueModel(1),
     # lambda input_features: AE(input_features),
     # lambda input_features: VAEpyod(input_features),
     # *our_models,
-    # *our_mixed_models,
-    *generated_mixed_models,
+    # *generated_mixed_models,
     # *our_ablation_limited_models,
-    # *our_adfa_mixed_models,
-    # lambda: create_our_model_mixed(COPODAdapter(), HierarchicalLifewatchMemory())
-    # lambda input_features: VAE_Adfa(input_features)
+    # *unsw_5_models(),
+    # *best_unsw_competitors()
+    *energy_pv_models()
+    # *www_adfa_ngids()
+    # *wind_rel_wind_models()
+    # *best_wind_competitors()
+    # *best_3ids_competitors(),
+    # *three_ids_models()
+    # *best_energy_competitors()
 ]
 
 print('models-creator', models_creators)
 strategies = [
     # lambda model_fn, _: SingleTaskLearnerWrapper(model_fn),
     # lambda model_fn, _: FirstTaskLearnerWrapper(model_fn),
-    lambda model_fn, _: IncrementalTaskLearnerWrapper(model_fn),
-    # lambda model_fn, _: IncrementalBatchLearnerWrapper(model_fn),
+    # lambda model_fn, _: IncrementalTaskLearnerWrapper(model_fn),
+    lambda model_fn, _: IncrementalBatchLearnerWrapper(model_fn),
     # lambda model_fn, tasks_fn: KnowItAllLearnerWrapper(model_fn, learning_tasks=tasks_fn())
 ]
 
@@ -189,6 +179,7 @@ for data_reader_fn in data_readers:
     for strategy_fn in strategies:
         for model_fn in models_creators:
             data_reader = data_reader_fn()
+            print(model_fn)
             final_model = strategy_fn(lambda: model_fn(data_reader.input_features()),
                                       lambda: list(data_reader.iterate_tasks()))
             print(f'Running {final_model.name()} on {data_reader.dataset_id()}')

@@ -7,10 +7,10 @@ from models.model_base import ModelBase
 
 
 class OneClassSVMAdapter(ModelBase):
-    def __init__(self):
-        self.nu = 0.1
+    def __init__(self, nu=0.1, gamma=0.1):
+        self.nu = nu
         self.kernel = 'rbf'
-        self.gamma = 0.1
+        self.gamma = gamma
         self.svm = OneClassSVM(nu=self.nu, kernel=self.kernel, gamma=self.gamma)
 
     def name(self):

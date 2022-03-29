@@ -7,9 +7,9 @@ from models.model_base import ModelBase
 
 
 class LocalOutlierFactorAdapter(ModelBase):
-    def __init__(self):
+    def __init__(self, n_neighbors=2):
         self.params = {
-            'n_neighbors': 2,
+            'n_neighbors': n_neighbors,
             'novelty': True
         }
         self.lof = LocalOutlierFactor(n_neighbors=self.params['n_neighbors'], novelty=self.params['novelty'])

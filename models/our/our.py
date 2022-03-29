@@ -16,7 +16,7 @@ from models.our.time_measurement import OurModelTimeMeasurement
 
 
 class OurModel(ModelBase):
-    def __init__(self, model, cpd, memory, retrain_after_steps=1000):
+    def __init__(self, model, cpd, memory, enable_scaled_predictions=False, retrain_after_steps=1000):
         self.model: ModelBase = model
         self.cpd: CPD = cpd
         self.memory: Memory = memory
@@ -28,6 +28,9 @@ class OurModel(ModelBase):
         self.steps_from_last_retrain = 0
 
         self.iteration = 0
+
+        self.max_reconstruction_error_per_dist = {}
+        self.enable_scaled_predictions = enable_scaled_predictions
 
     def learn(self, data):
         should_retrain = not self.ever_trained
@@ -58,11 +61,30 @@ class OurModel(ModelBase):
             self.ever_trained = True
             self.steps_from_last_retrain = 0
 
+            # compute max reconstructione rrors for memory data
+            if self.enable_scaled_predictions:
+                for dist_id, dist in self.memory.distributions().items():
+                    _, errors_for_dist = self.model.predict(np.array(dist))
+                    self.max_reconstruction_error_per_dist[dist_id] = max(errors_for_dist)
+
     def predict(self, data, task_name=None):
-        return self.model.predict(data)
+        if not self.enable_scaled_predictions:
+            return self.model.predict(data)
+        else:
+            print('scaling!')
+            # model predictions and errors
+            predictions, errors = self.model.predict(data)
+
+            # assign to dist
+            assigned_dists = self.memory.assign(data)
+
+            # scale
+            scaled_errors = [error/self.max_reconstruction_error_per_dist[dist_id] for dist_id, error in zip(assigned_dists, errors)]
+            return predictions, np.array(scaled_errors)
 
     def name(self):
-        return f'OurModel_{self.model.name()}_{self.memory.name()}_steps_{self.retrain_after_steps}'
+        scaled_text = '_ad_scaled' if self.enable_scaled_predictions else ''
+        return f'OurTestModel_{self.model.name()}_{self.memory.name()}_steps_{self.retrain_after_steps}_{scaled_text}'
 
     def parameters(self) -> Dict:
         return {'model': self.model.parameters(), 'cpd': self.cpd.params(), 'memory': self.memory.params(),
@@ -92,5 +114,5 @@ class OurModel(ModelBase):
                 'memory': self.memory.additional_measurements()}
 
 
-def create_our_model_mixed(model, cpd_memory, steps):
-    return OurModel(model, cpd=cpd_memory, memory=cpd_memory, retrain_after_steps=steps)
+def create_our_model_mixed(model, cpd_memory, steps, enable_scaled_pred=False):
+    return OurModel(model, cpd=cpd_memory, memory=cpd_memory, retrain_after_steps=steps, enable_scaled_predictions=enable_scaled_pred)
