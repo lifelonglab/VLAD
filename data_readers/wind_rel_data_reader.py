@@ -6,11 +6,12 @@ from task import Task
 
 
 class WindEnergyDataReader(ClusteredDataReader):
-    def __init__(self, file):
+    def __init__(self, file, name='wind_rel_wind'):
         super().__init__(file)
+        self.name = name
 
     def dataset_id(self) -> str:
-        return 'wind_rel_wind'
+        return self.name
 
     def input_features(self) -> int:
         return 10

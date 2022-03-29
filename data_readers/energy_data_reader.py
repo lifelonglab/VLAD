@@ -6,11 +6,12 @@ from task import Task
 
 
 class EnergyDataReader(ClusteredDataReader):
-    def __init__(self, file):
+    def __init__(self, file, name='energy_pv_hours'):
         super().__init__(file)
+        self.name = name
 
     def dataset_id(self) -> str:
-        return 'energy_pv_hours'
+        return self.name
 
     def input_features(self) -> int:
         return 14
