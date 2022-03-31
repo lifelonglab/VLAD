@@ -1,6 +1,7 @@
 from models.our.hierarchical_lifewatch import HierarchicalLifewatchMemory
 from models.our.models.vae import VAE
 from models.our.models.vae_2 import VAEParams
+from models.our.models.vae_multi import VAEMultiParams
 from models.our.our import create_our_model_mixed
 
 
@@ -59,7 +60,7 @@ def unsw_5_models():
 
 def energy_pv_models():
     max_samples = 5_000
-    threshold_ratio = 1.125
+    threshold_ratio = 1
     subconcept_threshold_ratio = 20
     steps = 15_000
     return _return_models(max_samples, threshold_ratio=threshold_ratio,
@@ -67,11 +68,31 @@ def energy_pv_models():
 
 
 def three_ids_models():
-    max_samples = 9_000
+    max_samples = 8000
     threshold_ratio = 1.25
-    subconcept_threshold_ratio = 10
+    subconcept_threshold_ratio = 1
+    steps = 10_000
+    return _return_models(max_samples, threshold_ratio=threshold_ratio,
+                          subconcept_threshold_ratio=subconcept_threshold_ratio, steps=steps, inter=48, latent=8)
+
+
+def credit_card_models():
+    max_samples = 12_000
+    threshold_ratio = 1.5
+    subconcept_threshold_ratio = 5
     steps = 15_000
     return _return_models(max_samples, threshold_ratio=threshold_ratio,
-                          subconcept_threshold_ratio=subconcept_threshold_ratio, steps=steps, inter=128, latent=32)
+                          subconcept_threshold_ratio=subconcept_threshold_ratio, steps=steps, inter=32, latent=16)
+
+
+def ngids_models():
+    max_samples = 4000
+    threshold_ratio = 1.25
+    subconcept_threshold_ratio = 1
+    steps = 30_000
+    return _return_models(max_samples, threshold_ratio=threshold_ratio,
+                          subconcept_threshold_ratio=subconcept_threshold_ratio, steps=steps, inter=32, latent=8)
+
+
 
 

@@ -3,6 +3,7 @@ import os
 
 from sklearn.metrics import roc_auc_score
 
+from data_readers.credit_card_data_reader import CreditCardDataReader
 from data_readers.energy_data_reader import EnergyDataReader
 from data_readers.mixed_ids_data_reader import MixedIdsDataReader
 from data_readers.unsw_data_reader import UnswDataReader
@@ -22,8 +23,11 @@ data_reader = UnswDataReader('data/unsw/unsw_clustered_10_closest_anomalies.npy'
 
 data_reader = WindEnergyDataReader('data/energy/wind_nrel_seq_wind.npy')
 data_reader = MixedIdsDataReader('data/mixed/3ids.npy', name='3ids')
-
 data_reader = EnergyDataReader('data/energy/energy_medium.npy')
+data_reader = CreditCardDataReader('data/creditcard/creditcard_5.npy', name='creditcard_5')
+
+data_reader = MixedIdsDataReader('data/ngids/ngids_5.npy', name='ngids_5')
+
 
 input_features = data_reader.input_features()
 
@@ -43,7 +47,7 @@ models = {
 }
 
 params = {
-    'vae': [(64, 16), (32, 16), (32, 8), (16, 8), (16, 4), (8, 4)],
+    'vae': [(64, 16), (48, 8), (32, 16), (32, 8), (16, 8), (16, 4), (8, 4)],
     'suod': [(0.001,), (0.0001,), (0.00001,)],
     'copod': [(0.001,), (0.0001,), (0.00001,)],
     'if': list(itertools.product([100, 200], [0.001, 0.0001])),
@@ -54,7 +58,7 @@ params = {
 best_model, best_value = {}, 0
 
 models_list = [
-    # 'suod', 'copod', 'if', 'lof', 'oc_svm',
+    'suod', 'copod', 'if', 'lof', 'oc_svm',
     'vae'
 ]
 

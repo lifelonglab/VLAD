@@ -11,11 +11,11 @@ unsw_data_reader = UnswDataReader('data/unsw/unsw_clustered_10_closest_anomalies
 
 energy_data_reader = EnergyDataReader('data/energy/energy_pv_hours_short.npy')
 wind_energy_data_reader = WindEnergyDataReader('data/energy/wind_nrel_seq_wind.npy')
-mixed_ids_data_reader = MixedIdsDataReader('data/mixed/www_adfa_ngids_clustered.npy',
+mixed_ids_data_reader = MixedIdsDataReader('data/ngids/ngids_5.npy',
                                                    name='www_adfa_ngids_clustered')
-credit_card_data_reader = CreditCardDataReader('data/creditcard/creditcard_5.npy', name='creditcard_5')
+credit_card_data_reader = CreditCardDataReader('data/creditcard/creditcard_10_small_newcluster.npy', name='creditcard_5')
 
-data_reader: DataReader = credit_card_data_reader
+data_reader: DataReader = mixed_ids_data_reader
 
 for t in data_reader.iterate_tasks():
     print(t.data.shape)

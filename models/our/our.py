@@ -43,16 +43,16 @@ class OurModel(ModelBase):
         self.steps_from_last_retrain += len(data)
         self.time_measurement.finish_cpd()
 
+        if self.steps_from_last_retrain >= self.retrain_after_steps:
+            should_retrain = True
+
         self.time_measurement.start_memory_management()
         self._update_memory(cps, data)
         self.memory.organize()
-        if self.memory.should_summarize:
+        if self.memory.should_summarize() or should_retrain:
             self.memory.summarize()
             should_retrain = True
         self.time_measurement.finish_memory_management()
-
-        if self.steps_from_last_retrain >= self.retrain_after_steps:
-            should_retrain = True
 
         if should_retrain:
             self.time_measurement.start_training()

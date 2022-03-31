@@ -11,7 +11,7 @@ from models.our.memories.summarization.pyramid_calculator import compute_pyramid
 
 
 class HierarchicalLifewatchMemory(CPD, Memory):
-    def __init__(self, max_samples=3_000, threshold_ratio=2, max_size_ratio=2, subconcept_threshold_ratio=5, disable_cpd=False, disable_replay=False):
+    def __init__(self, max_samples=3_000, threshold_ratio=2, max_size_ratio=5, subconcept_threshold_ratio=5, disable_cpd=False, disable_replay=False):
         self.lifewatch = LIFEWATCH(size_limit=0, threshold_ratio=threshold_ratio)
         self.hierarchy = HierarchicalOrganization(subconcept_threshold_ratio=subconcept_threshold_ratio)
         self.max_samples = max_samples
@@ -58,6 +58,8 @@ class HierarchicalLifewatchMemory(CPD, Memory):
     def summarize(self):
         if self.disable_replay:
             return
+        count = sum([len(dists) / (lay_no + 1) for lay_no, dists in enumerate(self.hierarchy.dists_by_layer())])
+        if count == 0: return
         print('Summarizing memory')
         sizes = compute_pyramid_size(self.hierarchy.dists_by_layer(), self.max_samples)
 

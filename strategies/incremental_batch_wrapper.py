@@ -13,6 +13,7 @@ class IncrementalBatchLearnerWrapper(Strategy):
     def learn(self, data) -> None:
         iterations = math.ceil(data.shape[0] / self.batch_size)
         for i in range(iterations):
+            print(f'Going through iteration {i}')
             self._model.learn(data[i * self.batch_size: (i + 1) * self.batch_size])
 
     def predict(self, data, task_name=None):

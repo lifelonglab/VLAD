@@ -12,13 +12,14 @@ from models.our.models.thresholds import max_threshold
 from models.our.utils import mse
 
 
-class VAEParams(ModelBase):
+class VAEMultiParams(ModelBase):
     def __init__(self, input_features, intermediate_dim, latent_dim):
         self.params = {
             'input_size': input_features,
             'intermediate_dim': intermediate_dim,
+            'intermediate_dim2': int((intermediate_dim + latent_dim) / 2),
             'latent_dim': latent_dim,
-            'l_rate': 0.001
+            'l_rate': 0.01
         }
         self.threshold = 0
         inputs, encoder = self._encoder()
@@ -43,10 +44,12 @@ class VAEParams(ModelBase):
     def _encoder(self):
         input_shape = self.params['input_size']
         intermediate_dim = self.params['intermediate_dim']
+        intermediate_dim2 = self.params['intermediate_dim2']
         latent_dim = self.params['latent_dim']
 
         inputs = Input(shape=input_shape, name='encoder_input')
-        x = Dense(intermediate_dim, activation='relu')(inputs)
+        x1 = Dense(intermediate_dim, activation='relu')(inputs)
+        x = Dense(intermediate_dim2, activation='relu')(x1)
         z_mean = Dense(latent_dim, name='z_mean')(x)
         z_log_var = Dense(latent_dim, name='z_log_var')(x)
         # use the reparameterization trick and get the output from the sample() function
@@ -57,10 +60,12 @@ class VAEParams(ModelBase):
     def _decoder(self):
         input_shape = self.params['input_size']
         intermediate_dim = self.params['intermediate_dim']
+        intermediate_dim2 = self.params['intermediate_dim2']
         latent_dim = self.params['latent_dim']
 
         latent_inputs = Input(shape=(latent_dim,), name='z_sampling')
-        x = Dense(intermediate_dim, activation='relu')(latent_inputs)
+        x1 = Dense(intermediate_dim, activation='relu')(latent_inputs)
+        x = Dense(intermediate_dim, activation='relu')(x1)
         outputs = Dense(input_shape, activation='sigmoid')(x)
         # Instantiate the decoder model:
         decoder = Model(latent_inputs, outputs, name='decoder')
@@ -79,7 +84,7 @@ class VAEParams(ModelBase):
         print('size of learning data', len(data))
         self.vae_model.fit(data, data,
                            shuffle=True,
-                           epochs=64,
+                           epochs=32,
                            batch_size=32,
                            validation_split=0.1)
         predictions = self.vae_model.predict(data)
@@ -91,7 +96,7 @@ class VAEParams(ModelBase):
         return [1 if e > self.threshold else 0 for e in errors], errors
 
     def name(self):
-        return f'VAE_Params_64ep_{self.params["intermediate_dim"]}_{self.params["latent_dim"]}'
+        return f'VAE_Params_Multi_lr_{self.params["intermediate_dim"]}_{self.params["latent_dim"]}'
 
     def parameters(self) -> Dict:
         return self.params

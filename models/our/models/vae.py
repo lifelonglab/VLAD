@@ -79,7 +79,8 @@ class VAE(ModelBase):
         self.vae_model.fit(data, data,
                            shuffle=False,
                            epochs=64,
-                           batch_size=32)
+                           batch_size=32,
+                           validation_split=0.1)
         predictions = self.vae_model.predict(data)
         self.threshold = max_threshold(data, predictions)
 

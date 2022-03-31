@@ -2,8 +2,9 @@ import itertools
 import os
 
 from best_competitor_models import best_unsw_competitors, best_wind_competitors, best_3ids_competitors, \
-    best_energy_competitors
-from best_models import wind_rel_wind_models, unsw_5_models, energy_pv_models, three_ids_models
+    best_energy_competitors, best_credit_card_competitors
+from best_models import wind_rel_wind_models, unsw_5_models, energy_pv_models, three_ids_models, credit_card_models, \
+    ngids_models
 from data_readers.adfa_data_reader import AdfaDataReader
 from data_readers.bosc_data_reader import BoscDataReader
 from data_readers.credit_card_data_reader import CreditCardDataReader
@@ -45,18 +46,6 @@ def create_our_model(base_model_fn, cpd_fn, memory_fn):
     return lambda input_features: OurModel(base_model_fn(input_features), cpd=cpd_fn(), memory=memory_fn())
 
 
-our_models_base = [
-    # lambda _: COPODAdapter(),
-    lambda input_features: AE(input_features)
-]
-our_cpds = [
-    lambda: AlwaysNewCPD(),
-    # lambda: LIFEWATCH()
-]
-memories = [lambda: FlatMemoryWithSummarization()]
-our_models = [create_our_model(base_model_fn, cpd_fn, memory_fn) for base_model_fn, cpd_fn, memory_fn in
-              itertools.product(our_models_base, our_cpds, memories)]
-
 generated_mixed_models = []
 for ratio in [
     1.5,
@@ -83,43 +72,20 @@ for ratio in [
                                                subconcept_threshold_ratio=subconcept_threshold_ratio),
                                            steps=steps_in))
 
-our_ablation_limited_models = [
-    lambda input_features: create_our_model_mixed(VAE(input_features), HierarchicalLifewatchMemory(
-        max_samples=5000, threshold_ratio=2.5, subconcept_threshold_ratio=5, disable_cpd=True), steps=15000),
-    lambda input_features: create_our_model_mixed(VAE(input_features), HierarchicalLifewatchMemory(
-        max_samples=5000, threshold_ratio=2.5, subconcept_threshold_ratio=5, disable_replay=True), steps=15000)
-]
 
-
-our_adfa_mixed_models = [
-    lambda input_features: create_our_model_mixed(VAE_Adfa(input_features),
-                                                  HierarchicalLifewatchMemory(max_samples=1000, threshold_ratio=2)),
-    lambda input_features: create_our_model_mixed(VAE_Adfa(input_features),
-                                                  HierarchicalLifewatchMemory(max_samples=500, threshold_ratio=2)),
-    lambda input_features: create_our_model_mixed(VAE_Adfa(input_features),
-                                                  HierarchicalLifewatchMemory(max_samples=1000, threshold_ratio=2.5)),
-    lambda input_features: create_our_model_mixed(VAE_Adfa(input_features),
-                                                  HierarchicalLifewatchMemory(max_samples=500, threshold_ratio=2.5)),
-    lambda input_features: create_our_model_mixed(VAE_Adfa(input_features),
-                                                  HierarchicalLifewatchMemory(max_samples=500, threshold_ratio=3)),
-    lambda input_features: create_our_model_mixed(VAE_Adfa(input_features),
-                                                  HierarchicalLifewatchMemory(max_samples=500, threshold_ratio=3.5)),
-]
-
-three_ids_data_reader = lambda: MixedIdsDataReader('data/mixed/3ids.npy', name='3ids')
+ngids_data_reader = lambda: MixedIdsDataReader('data/ngids/ngids_5.npy', name='ngids_5')
 three_ids_not_closest_data_reader = lambda: MixedIdsDataReader('data/mixed/3ids_not_closest.npy', name='3ids_not_closest')
+three_ids2_data_reader = lambda: MixedIdsDataReader('data/mixed/3ids_2.npy', name='3ids2')
 
-adfa_ngids_www = lambda: MixedIdsDataReader('data/mixed/adfa_ngids_www.npy',
-                                                   name='adfa_ngids_www')
+adfa_ngids_www = lambda: MixedIdsDataReader('data/mixed/adfa_ngids_www.npy', name='adfa_ngids_www')
 
 # adfa_data_reader = lambda: AdfaDataReader('data/adfa/full_adfa.npy', 'full_adfa')
 smd_data_reader = lambda: SmdDataReader()
-credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard_5.npy', name='creditcard_5')
+credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard_10_newcluster.npy', name='creditcard_10_newcluster')
 data_reader1 = lambda: MixedIdsDataReader('data/ngids/full_ngids.npy', name='full_ngids')
 
 
-www_data_reader = lambda: MixedIdsDataReader('data/www/www_6x2_short.npy',
-                                             name='www_6x2_short')
+www_data_reader = lambda: MixedIdsDataReader('data/www/www_6x2_short.npy', name='www_6x2_short')
 adfa_data_reader = lambda: MixedIdsDataReader('data/adfa/adfa_clustered_5_closest_anomalies.npy',
                                               name='adfa_clustered_5_closest_anomalies')
 
@@ -131,39 +97,34 @@ wind_energy_data_reader = lambda: WindEnergyDataReader('data/energy/wind_nrel_se
 wind_short_energy_data_reader = lambda: WindEnergyDataReader('data/energy/wind_short.npy', 'wind_short')
 
 data_readers = [
-    # credit_card_data_reader,
-    energy_data_reader,
+    # energy_data_reader,
     # wind_energy_data_reader,
     # three_ids_not_closest_data_reader
-    # three_ids_data_reader,
-    # www_data_reader,
+    # ngids_data_reader,
+    www_data_reader,
     # unsw_data_reader,
     # smd_data_reader,
     # mixed_ids_data_reader,
     # adfa_ngids_www
     # wind_short_energy_data_reader
+    # credit_card_data_reader,
+    # three_ids2_data_reader
 ]
 models_creators = [
-    # lambda _: IsolationForestAdapter(),
-    # lambda _: LocalOutlierFactorAdapter(),
-    # lambda _: OneClassSVMAdapter(),
-    # lambda _: COPODAdapter(),
-    # lambda _: SUODAdapter(),
-    # lambda input_features: VAE(input_features),
-    # lambda input_features: AE(input_features),
-    # lambda input_features: VAEpyod(input_features),
-    # *our_models,
     # *generated_mixed_models,
     # *our_ablation_limited_models,
     # *unsw_5_models(),
     # *best_unsw_competitors()
-    *energy_pv_models()
     # *www_adfa_ngids()
     # *wind_rel_wind_models()
     # *best_wind_competitors()
     # *best_3ids_competitors(),
     # *three_ids_models()
     # *best_energy_competitors()
+    # *energy_pv_models()
+    # *best_credit_card_competitors(),
+    # *credit_card_models()
+    *ngids_models()
 ]
 
 print('models-creator', models_creators)
