@@ -68,15 +68,16 @@ if __name__ == '__main__':
         # 'energy_pv_hours',
         # 'energy_pv_hours_short',
         # 'wind_rel_wind',
-        # 'wind_short',
+        'wind_clustered_10',
         # 'creditcard_flat10',
         # 'creditcard_5x5',
         # 'unsw_clustered_5_closest_anomaly'
-        # 'unsw_clustered_10_closest_anomaly'
+        # 'unsw_10_small'
         # 'www_adfa_ngids_clustered',
         # 'www_clustered_5_closest_anomalies',
-        'www_6x2_short'
-        # 'adfa_ngids_www'
+        # 'www_6x2_short'
+        # 'ngids_5'
+        # 'nsl_10_r'
         # '3ids'
     ]
     for dataset in datasets:

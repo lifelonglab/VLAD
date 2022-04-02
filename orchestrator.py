@@ -2,14 +2,15 @@ import itertools
 import os
 
 from best_competitor_models import best_unsw_competitors, best_wind_competitors, best_3ids_competitors, \
-    best_energy_competitors, best_credit_card_competitors
+    best_energy_competitors, best_credit_card_competitors, best_nsl_competitors
 from best_models import wind_rel_wind_models, unsw_5_models, energy_pv_models, three_ids_models, credit_card_models, \
-    ngids_models
+    ngids_models, www_models, nsl_models
 from data_readers.adfa_data_reader import AdfaDataReader
 from data_readers.bosc_data_reader import BoscDataReader
 from data_readers.credit_card_data_reader import CreditCardDataReader
 from data_readers.energy_data_reader import EnergyDataReader
 from data_readers.mixed_ids_data_reader import MixedIdsDataReader
+from data_readers.nsl_data_reader import NslDataReader
 from data_readers.smd_data_reader import SmdDataReader
 from data_readers.unsw_data_reader import UnswDataReader
 from data_readers.wind_rel_data_reader import WindEnergyDataReader
@@ -81,7 +82,7 @@ adfa_ngids_www = lambda: MixedIdsDataReader('data/mixed/adfa_ngids_www.npy', nam
 
 # adfa_data_reader = lambda: AdfaDataReader('data/adfa/full_adfa.npy', 'full_adfa')
 smd_data_reader = lambda: SmdDataReader()
-credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard_10_newcluster.npy', name='creditcard_10_newcluster')
+credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard_9.npy', name='creditcard_9')
 data_reader1 = lambda: MixedIdsDataReader('data/ngids/full_ngids.npy', name='full_ngids')
 
 
@@ -89,34 +90,39 @@ www_data_reader = lambda: MixedIdsDataReader('data/www/www_6x2_short.npy', name=
 adfa_data_reader = lambda: MixedIdsDataReader('data/adfa/adfa_clustered_5_closest_anomalies.npy',
                                               name='adfa_clustered_5_closest_anomalies')
 
-unsw_data_reader = lambda: UnswDataReader('data/unsw/unsw_clustered_10_closest_anomalies.npy',
-                                          name='unsw_clustered_10_closest_anomaly')
+unsw_data_reader = lambda: UnswDataReader('data/unsw/unsw_clustered_10_closest_anomalies.npy', name='unsw_clustered_10_closest_anomaly')
+unsw_small_data_reader = lambda: UnswDataReader('data/unsw/unsw_10_small.npy', name='unsw_10_small')
 
 energy_data_reader = lambda: EnergyDataReader('data/energy/energy_medium.npy', 'energy_medium')
 wind_energy_data_reader = lambda: WindEnergyDataReader('data/energy/wind_nrel_seq_wind.npy')
-wind_short_energy_data_reader = lambda: WindEnergyDataReader('data/energy/wind_short.npy', 'wind_short')
+wind_short_energy_data_reader = lambda: WindEnergyDataReader('data/energy/wind_clustered_10.npy', 'wind_clustered_10')
+
+nsl_data_reader = lambda: NslDataReader('data/nsl/nsl_10.npy', 'nsl_10')
+nslr_data_reader = lambda: NslDataReader('data/nsl/nsl_10_r.npy', 'nsl_10_r')
 
 data_readers = [
     # energy_data_reader,
     # wind_energy_data_reader,
     # three_ids_not_closest_data_reader
     # ngids_data_reader,
-    www_data_reader,
+    # www_data_reader,
     # unsw_data_reader,
+    # unsw_small_data_reader
     # smd_data_reader,
     # mixed_ids_data_reader,
     # adfa_ngids_www
-    # wind_short_energy_data_reader
+    wind_short_energy_data_reader
     # credit_card_data_reader,
     # three_ids2_data_reader
+    # nsl_data_reader
+    # nslr_data_reader
 ]
 models_creators = [
     # *generated_mixed_models,
-    # *our_ablation_limited_models,
     # *unsw_5_models(),
     # *best_unsw_competitors()
     # *www_adfa_ngids()
-    # *wind_rel_wind_models()
+    *wind_rel_wind_models()
     # *best_wind_competitors()
     # *best_3ids_competitors(),
     # *three_ids_models()
@@ -124,7 +130,10 @@ models_creators = [
     # *energy_pv_models()
     # *best_credit_card_competitors(),
     # *credit_card_models()
-    *ngids_models()
+    # *ngids_models(),
+    # *www_models()
+    # *best_nsl_competitors()
+    # *nsl_models()
 ]
 
 print('models-creator', models_creators)

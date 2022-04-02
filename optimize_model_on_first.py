@@ -6,6 +6,7 @@ from sklearn.metrics import roc_auc_score
 from data_readers.credit_card_data_reader import CreditCardDataReader
 from data_readers.energy_data_reader import EnergyDataReader
 from data_readers.mixed_ids_data_reader import MixedIdsDataReader
+from data_readers.nsl_data_reader import NslDataReader
 from data_readers.unsw_data_reader import UnswDataReader
 from data_readers.wind_rel_data_reader import WindEnergyDataReader
 from models.classic.isolation_forest import IsolationForestAdapter
@@ -21,12 +22,13 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 data_reader = UnswDataReader('data/unsw/unsw_clustered_10_closest_anomalies.npy',
                              name='unsw_clustered_10_closest_anomaly')
 
-data_reader = WindEnergyDataReader('data/energy/wind_nrel_seq_wind.npy')
-data_reader = MixedIdsDataReader('data/mixed/3ids.npy', name='3ids')
-data_reader = EnergyDataReader('data/energy/energy_medium.npy')
-data_reader = CreditCardDataReader('data/creditcard/creditcard_5.npy', name='creditcard_5')
-
-data_reader = MixedIdsDataReader('data/ngids/ngids_5.npy', name='ngids_5')
+data_reader = WindEnergyDataReader('data/energy/wind_clustered_10.npy', 'wind_clustered_5')
+# data_reader = MixedIdsDataReader('data/mixed/3ids.npy', name='3ids')
+# data_reader = EnergyDataReader('data/energy/energy_medium.npy')
+# data_reader = CreditCardDataReader('data/creditcard/creditcard_5.npy', name='creditcard_5')
+#
+# data_reader = MixedIdsDataReader('data/ngids/ngids_5.npy', name='ngids_5')
+# data_reader = NslDataReader('data/nsl/nsl_10.npy', 'nsl_10')
 
 
 input_features = data_reader.input_features()
