@@ -6,9 +6,10 @@ from strategies.strategy import Strategy
 
 
 class IncrementalBatchLearnerWrapper(Strategy):
-    def __init__(self, model_creation_fn: Callable[[], ModelBase]):
+    def __init__(self, model_creation_fn: Callable[[], ModelBase], execution_no=0):
         self._model = model_creation_fn()
         self.batch_size = 1024
+        self.execution_no = execution_no
 
     def learn(self, data) -> None:
         iterations = math.ceil(data.shape[0] / self.batch_size)
@@ -26,5 +27,5 @@ class IncrementalBatchLearnerWrapper(Strategy):
         return self._model
 
     def strategy_name(self):
-        return 'IncrementalBatchLearner'
+        return f'IncrementalBatchLearner_{self.execution_no}'
 

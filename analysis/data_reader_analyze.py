@@ -18,8 +18,12 @@ www_data_reader = MixedIdsDataReader('data/www/www_6x2_short.npy',
                                                    name='www_adfa_ngids_clustered')
 credit_card_data_reader = CreditCardDataReader('data/creditcard/creditcard_25.npy', name='creditcard_5')
 nsl_data_reader = NslDataReader('data/nsl/nsl_10.npy', 'nsl_10')
-
-data_reader: DataReader = wind_energy_data_reader
+three_ids_reader = MixedIdsDataReader('data/mixed/3ids_3.npy', name='3ids2')
+data_reader: DataReader = three_ids_reader
 
 for t in data_reader.iterate_tasks():
     print(t.data.shape)
+
+
+for t in data_reader.load_test_tasks():
+    print(len([c for c in t.labels if c == 1]))

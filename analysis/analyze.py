@@ -68,7 +68,7 @@ if __name__ == '__main__':
         # 'energy_pv_hours',
         # 'energy_pv_hours_short',
         # 'wind_rel_wind',
-        'wind_clustered_10',
+        # 'wind_clustered_10',
         # 'creditcard_flat10',
         # 'creditcard_5x5',
         # 'unsw_clustered_5_closest_anomaly'
@@ -78,7 +78,7 @@ if __name__ == '__main__':
         # 'www_6x2_short'
         # 'ngids_5'
         # 'nsl_10_r'
-        # '3ids'
+        '3ids3'
     ]
     for dataset in datasets:
         path = Path(f'out/results/{dataset}')

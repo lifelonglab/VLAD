@@ -36,11 +36,11 @@ def _return_models(max_samples, threshold_ratio, subconcept_threshold_ratio, ste
 
 
     return [
-        # clean_vae,
-        # full_model,
-        # no_cpd,
-        # no_replay,
-        scaled
+        clean_vae,
+        full_model,
+        no_cpd,
+        no_replay,
+        # scaled
     ]
 
 
@@ -72,20 +72,20 @@ def unsw_5_models():
 
 def energy_pv_models():
     max_samples = 5_000
-    threshold_ratio = 1
-    subconcept_threshold_ratio = 20
+    threshold_ratio = 1.25
+    subconcept_threshold_ratio = 5
     steps = 15_000
     return _return_models(max_samples, threshold_ratio=threshold_ratio,
-                          subconcept_threshold_ratio=subconcept_threshold_ratio, steps=steps, inter=32, latent=16)
+                          subconcept_threshold_ratio=subconcept_threshold_ratio, steps=steps, inter=64, latent=16)
 
 
 def three_ids_models():
-    max_samples = 8000
-    threshold_ratio = 1.25
+    max_samples = 4_000
+    threshold_ratio = 0.75
     subconcept_threshold_ratio = 1
-    steps = 10_000
+    steps = 30_000
     return _return_models(max_samples, threshold_ratio=threshold_ratio,
-                          subconcept_threshold_ratio=subconcept_threshold_ratio, steps=steps, inter=48, latent=8)
+                          subconcept_threshold_ratio=subconcept_threshold_ratio, steps=steps, inter=8, latent=4)
 
 
 def credit_card_models():

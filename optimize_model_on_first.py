@@ -22,9 +22,9 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 data_reader = UnswDataReader('data/unsw/unsw_clustered_10_closest_anomalies.npy',
                              name='unsw_clustered_10_closest_anomaly')
 
-data_reader = WindEnergyDataReader('data/energy/wind_clustered_10.npy', 'wind_clustered_5')
-# data_reader = MixedIdsDataReader('data/mixed/3ids.npy', name='3ids')
-# data_reader = EnergyDataReader('data/energy/energy_medium.npy')
+# data_reader = WindEnergyDataReader('data/energy/wind_clustered_10.npy', 'wind_clustered_5')
+# data_reader = MixedIdsDataReader('data/mixed/3ids_3.npy', name='3ids')
+data_reader = EnergyDataReader('data/energy/energy_20.npy')
 # data_reader = CreditCardDataReader('data/creditcard/creditcard_5.npy', name='creditcard_5')
 #
 # data_reader = MixedIdsDataReader('data/ngids/ngids_5.npy', name='ngids_5')
