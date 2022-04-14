@@ -19,12 +19,12 @@ from models.our.models.vae_2 import VAEParams
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
-data_reader = UnswDataReader('data/unsw/unsw_clustered_10_closest_anomalies.npy',
+data_reader = UnswDataReader('data/unsw/unsw_10_kfold_0.npy',
                              name='unsw_clustered_10_closest_anomaly')
 
-# data_reader = WindEnergyDataReader('data/energy/wind_clustered_10.npy', 'wind_clustered_5')
-# data_reader = MixedIdsDataReader('data/mixed/3ids_3.npy', name='3ids')
-data_reader = EnergyDataReader('data/energy/energy_20.npy')
+data_reader = WindEnergyDataReader('data/wind/wind_5_kfold_0.npy', 'wind_clustered_5')
+# data_reader = MixedIdsDataReader('data/3ids/3ids_3.npy', name='3ids')
+# data_reader = EnergyDataReader('data/energy/energy_20.npy')
 # data_reader = CreditCardDataReader('data/creditcard/creditcard_5.npy', name='creditcard_5')
 #
 # data_reader = MixedIdsDataReader('data/ngids/ngids_5.npy', name='ngids_5')
@@ -60,8 +60,9 @@ params = {
 best_model, best_value = {}, 0
 
 models_list = [
-    'suod', 'copod', 'if', 'lof', 'oc_svm',
-    'vae'
+    # 'suod', 'copod', 'if', 'lof',
+    'oc_svm',
+    # 'vae'
 ]
 
 for model_name in models_list:
