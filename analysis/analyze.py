@@ -78,7 +78,17 @@ if __name__ == '__main__':
         # 'www_6x2_short'
         # 'ngids_5'
         # 'nsl_10_r'
-        '3ids3'
+        # '3ids3',
+        *[f'3ids3_order_{i}' for i in range(5)],
+        *[f'ngids_order_{i}' for i in range(5)],
+        *[f'nsl_8_order_{i}' for i in range(5)],
+        *[f'unsw_10_order_{i}' for i in range(5)],
+        *[f'wind_5_order_{i}' for i in range(5)],
+        *[f'ngids_kfold_{i}' for i in range(5)],
+        *[f'3ids3_kfold_{i}' for i in range(5)],
+        *[f'nsl_8_kfold_{i}' for i in range(5)],
+        *[f'unsw_10_kfold_{i}' for i in range(5)],
+        *[f'wind_5_kfold_{i}' for i in range(5)],
     ]
     for dataset in datasets:
         path = Path(f'out/results/{dataset}')

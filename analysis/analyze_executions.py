@@ -14,4 +14,4 @@ def analyze_executions(results_file):
 
 
 if __name__ == '__main__':
-    analyze_executions('out/results_analysis/ngids_5/analysis_results.csv')
+    analyze_executions('out.tex/results_analysis/ngids_5/analysis_results.csv')
