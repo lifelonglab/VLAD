@@ -20,7 +20,7 @@ class OneClassSVMAdapter(ModelBase):
         self.svm.fit(data)
 
     def predict(self, data, task_name=None):
-        return adjust_predictions(self.svm.predict(data)), self.svm.decision_function(data)
+        return adjust_predictions(self.svm.predict(data)), -self.svm.decision_function(data)
 
     def parameters(self) -> Dict:
         return {

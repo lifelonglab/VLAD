@@ -51,6 +51,7 @@ class LIFEWATCH(CPD):
                             self.update_threshold(self.current_dist)
                 else:
                     best_dist, best_ratio = sorted(ratios.items(), key=lambda it: it[1])[0]
+                    # best_dist, best_ratio = -1, 10
                     cp_index = mini_batch_id * self.sample_size
                     if best_ratio > 1:  # new dist
                         self.is_creating_new_dist = True
@@ -79,6 +80,8 @@ class LIFEWATCH(CPD):
         for dist_id in self.distributions.keys():
             self.update_threshold(dist_id)
         self.is_creating_new_dist = False
+        if self.current_dist is None:
+            self.current_dist = 0
 
     def assign(self, data):
         predictions = []

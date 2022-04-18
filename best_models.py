@@ -48,8 +48,8 @@ def _return_models(max_samples, threshold_ratio, subconcept_threshold_ratio, ste
 
 def wind_rel_wind_models():
     max_samples = 250
-    threshold_ratio = 1.25
-    subconcept_threshold_ratio = 1.5
+    threshold_ratio = 1.75
+    subconcept_threshold_ratio = 1.25
     max_size_ratio = 5
     steps = 10_000
     return _return_models(max_samples, threshold_ratio=threshold_ratio,
@@ -76,7 +76,7 @@ def energy_pv_models():
 
 def three_ids_models():
     max_samples = 4000
-    threshold_ratio = 0.75
+    threshold_ratio = 0.95
     subconcept_threshold_ratio = 1
     steps = 30_000
     return _return_models(max_samples, threshold_ratio=threshold_ratio,
@@ -122,7 +122,7 @@ def nsl_models():
 
 
 def generate_unsw_memory_models():
-    sizes = [5000, 7500, 10000]
+    sizes = [10000]
     threshold_ratio = 2
     subconcept_threshold_ratio = 5
     steps = 15_000

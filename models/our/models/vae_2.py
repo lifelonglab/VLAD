@@ -36,6 +36,13 @@ class VAEParams(ModelBase):
         reconstruction_loss = K.sum(K.square(x - x_decoded_mean))
         # compute the KL loss
         kl_loss = - 0.5 * K.sum(1 + self.z_log_var - K.square(self.z_mean) - K.square(K.exp(self.z_log_var)), axis=-1)
+        kl_loss = tf.clip_by_value(kl_loss, clip_value_min=-1_000_000_000, clip_value_max=1_000_000_000)
+        kl_loss = tf.where(tf.math.is_nan(kl_loss), tf.zeros_like(kl_loss), kl_loss)
+        # if tf.math.is_inf(kl_loss):
+        # print('kl_loss', kl_loss)
+        # print(kl_loss.shape)
+        # print(kl_loss.numpy())
+            # kl_loss = tf.constant(32 * [1_000_000_000_000.00])
         # return the average loss over all
         total_loss = K.mean(reconstruction_loss + kl_loss)
         return total_loss
