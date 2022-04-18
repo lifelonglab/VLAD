@@ -15,9 +15,11 @@ class ClusteredDataReader(DataReader, ABC):
 
         for c in data:
             self.train_tasks.append(Task(name=c['name'], data=c['train_data'], labels=None))
-            test_data = c['test_data']
-            test_labels = c['test_labels']
-            self.test_tasks.append(Task(name=c['name'], data=test_data, labels=test_labels))
+            if 'test_data' in c and len(c['test_data']) > 0:
+                print('len', len(c['test_data']))
+                test_data = c['test_data']
+                test_labels = c['test_labels']
+                self.test_tasks.append(Task(name=c['name'], data=test_data, labels=test_labels))
 
     def load_test_tasks(self) -> List[Task]:
         return self.test_tasks
