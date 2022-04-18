@@ -53,25 +53,27 @@ def plot_single_memory(dataset):
 
 def plot_all_memories(datasets):
     df = pd.concat([_load_data_from_dataset(dataset) for dataset in datasets], ignore_index=True)
-    fig, axes = plt.subplots(nrows=1, ncols=2, sharex=True)
-
-    for i, metric in enumerate(['roc_auc', 'bwt']):
+    fig, ax = plt.subplots(nrows=1, ncols=1, sharex=True)
+    axes = [ax]
+    for i, metric in enumerate(['roc_auc']):
         metric_df = df.loc[df['metric'] == metric]
         g = sns.lineplot(ax=axes[i], data=metric_df, x='memory', y='value', hue='dataset')
-        axes[i].set_xlabel('Memory size')
+        axes[i].set_xlabel('Limit of the samples in memory')
         axes[i].set_ylabel(metric.upper())
         # g.map(plt.axhline, y=0, color=".1", dashes=(2, 1), zorder=0)
         # g.tight_layout()
         # g.map(plt.axhline, y=1, color=".1", dashes=(2, 1), zorder=0)
         # g.set(ylim=(-0.5, 1))
 
-    for i in range(2):
+    for i in range(1):
         axes[i].get_legend().remove()
 
     handles, labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, labels, loc='lower center', ncol=5, bbox_to_anchor=(0.5, 0.9))
-    plt.show()
-    plt.close()
+    # plt.subplots_adjust(wspace=0.3)
+    plt.savefig('out/plots/memories.pdf', bbox_inches='tight')
+    # plt.show()
+    # plt.close()
 
 
 datasets = ['ngids_kfold_memory_adaptive', 'nsl_8_kfold_memory', 'unsw_10_kfold_memory', '3ids3_kfold_memory', 'wind_5_kfold_memory']
