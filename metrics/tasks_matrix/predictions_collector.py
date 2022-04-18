@@ -29,4 +29,4 @@ class PredictionsCollector:
                                                   'y_pred': y_pred, 'y_true': y_true, 'scores': scores}
 
     def results(self) -> CollectedResults:
-        return [[self._results[lt][tt] for tt in self.order] for lt in self.order]
+        return [[self._results[lt][tt] for tt in self.order if tt in self._results[lt]] for lt in self.order]

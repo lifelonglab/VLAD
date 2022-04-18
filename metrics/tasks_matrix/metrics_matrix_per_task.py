@@ -64,10 +64,13 @@ class BaseMetricsMatrixPerTask:
         return self._results
 
     def get_single_metric_matrix(self, metric: BaseMetric) -> SingleMetricMatrix:
-        tasks_no = len(self.order)
-        matrix = np.zeros((tasks_no, tasks_no))
+        learning_tasks_no = len(self.order)
+        eval_tasks = list(self._results[self.order[0]].keys())
+        evaluation_tasks_no = len(self._results[self.order[0]])
+        matrix = np.zeros((learning_tasks_no, evaluation_tasks_no))
         for i, learned_task in enumerate(self.order):
-            for j, test_task in enumerate(self.order):
-                matrix[i][j] = self._results[learned_task][test_task][metric]
+            for j, test_task in enumerate(eval_tasks):
+                if test_task in self._results[learned_task]:
+                    matrix[i][j] = self._results[learned_task][test_task][metric]
 
         return matrix

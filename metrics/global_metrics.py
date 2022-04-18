@@ -11,12 +11,12 @@ def calculate_global_metrics(tasks_matrix_metrics: BaseMetricsMatrixPerTask):
     return {
         metric: {
             'value': (MetricGlobal().process(tasks_matrix_metrics.get_single_metric_matrix(metric))),
-            'backward_transfer': BackwardTransferGlobal().process(
-                tasks_matrix_metrics.get_single_metric_matrix(metric)),
-            'forward_transfer': ForwardTransferGlobal().process(tasks_matrix_metrics.get_single_metric_matrix(metric)),
-            'forward_transfer_darpa': ForwardTransferContrastDarpaGlobal().process(tasks_matrix_metrics.get_single_metric_matrix(metric)),
-            'backward_transfer_darpa': BackwardTransferContrastDarpaGlobal().process(tasks_matrix_metrics.get_single_metric_matrix(metric)),
-            'performance_maintenance_darpa': PerformanceMaintenanceDarpa().process(tasks_matrix_metrics.get_single_metric_matrix(metric)),
+            # 'backward_transfer': BackwardTransferGlobal().process(
+            #     tasks_matrix_metrics.get_single_metric_matrix(metric)),
+            # 'forward_transfer': ForwardTransferGlobal().process(tasks_matrix_metrics.get_single_metric_matrix(metric)),
+            # 'forward_transfer_darpa': ForwardTransferContrastDarpaGlobal().process(tasks_matrix_metrics.get_single_metric_matrix(metric)),
+            # 'backward_transfer_darpa': BackwardTransferContrastDarpaGlobal().process(tasks_matrix_metrics.get_single_metric_matrix(metric)),
+            # 'performance_maintenance_darpa': PerformanceMaintenanceDarpa().process(tasks_matrix_metrics.get_single_metric_matrix(metric)),
         }
         for metric in base_metrics
     }
