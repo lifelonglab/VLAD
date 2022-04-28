@@ -35,10 +35,10 @@ def best_wind_competitors():
 def best_3ids_competitors():
     return [
         # lambda _: SUODAdapter(contamination=0.00001),
-        # lambda _: COPODAdapter(contamination=0.001),
+        lambda _: COPODAdapter(contamination=0.5),
         # lambda _: IsolationForestAdapter(n_estimators=100, contamination=0.001),
         # lambda _: LocalOutlierFactorAdapter(n_neighbors=5),
-        lambda _: OneClassSVMAdapter(nu=0.01, gamma=0.1),
+        # lambda _: OneClassSVMAdapter(nu=0.01, gamma=0.1),
     ]
 
 

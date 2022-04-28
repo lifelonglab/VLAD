@@ -77,7 +77,7 @@ def energy_pv_models():
 def three_ids_models():
     max_samples = 4000
     threshold_ratio = 0.95
-    subconcept_threshold_ratio = 1
+    subconcept_threshold_ratio = 0.5
     steps = 30_000
     return _return_models(max_samples, threshold_ratio=threshold_ratio,
                           subconcept_threshold_ratio=subconcept_threshold_ratio, max_size_ratio=20, steps=steps, inter=8, latent=4)
@@ -122,7 +122,7 @@ def nsl_models():
 
 
 def generate_unsw_memory_models():
-    sizes = [10000]
+    sizes = [7500]
     threshold_ratio = 2
     subconcept_threshold_ratio = 5
     steps = 15_000

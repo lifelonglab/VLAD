@@ -6,12 +6,12 @@ import pandas as pd
 
 dir_path = 'out/results_analysis'
 
-datasets = ['ngids', '3ids3', 'nsl_10', 'unsw_10', 'wind_5']
+datasets = ['ngids', '3ids3', 'nsl_8', 'unsw_10', 'wind_5']
 methods = ['IsolationForest', 'LocalOutlierFactor', 'OC-SVM', 'SUOD', 'COPOD', 'VAE_', 'Our']
 method_translation = {'IsolationForest': 'IF', 'LocalOutlierFactor': 'LOF', 'OC-SVM': 'OC-SVM', 'SUOD': 'SUOD',
                       'COPOD': 'COPOD', 'VAE_': 'VAE'}
 
-dataset_translation = {'ngids': 'NGIDS', '3ids3': '3IDS', 'nsl_10': 'NSL-KDD', 'unsw_10': 'UNSW', 'wind_5': 'WIND', '': ''}
+dataset_translation = {'ngids': 'NGIDS', '3ids3': '3IDS', 'nsl_8': 'NSL-KDD', 'unsw_10': 'UNSW', 'wind_5': 'WIND', '': ''}
 
 
 def translate_method(name):
@@ -29,7 +29,7 @@ def translate_method(name):
     exit(f'WRONG NAME {name}')
 
 
-mode = 'order'
+mode = 'kfold'
 
 results = {}
 for dataset in datasets:
@@ -54,5 +54,5 @@ for d, single_results in results.items():
         if 'NoCPD' not in m and 'NoReplay' not in m:
             save_results[d][m] = values
 
-with open(f'{dir_path}/summary_results_all_ordering.json', 'w') as f:
+with open(f'{dir_path}/summary_results_all_{mode}.json', 'w') as f:
     json.dump(save_results, f)

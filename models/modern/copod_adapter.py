@@ -13,7 +13,7 @@ class COPODAdapter(ModelBase):
         self.copod = COPOD(contamination=self.params['contamination'])
 
     def name(self):
-        return 'COPOD'
+        return 'COPOD-v2'
 
     def learn(self, data) -> None:
         self.copod.fit(data)

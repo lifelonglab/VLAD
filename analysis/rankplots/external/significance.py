@@ -12,6 +12,8 @@ License: See the LICENSE file.
 
 import argparse
 import math
+from statistics import mean
+
 import scipy.stats as stats
 
 from tabulate import tabulate
@@ -91,6 +93,19 @@ def reference_difference(avg_ranks, n_datasets, significance_level=0.05):
     # sort the p-values in ascending order
     sorted_pvals = sorted((p, i) for i, p in enumerate(P_values))
 
+
+    # adjust p_values
+    adjusted_pvals = []
+    m = len(sorted_pvals)
+    for i in range(m):
+        # print(sorted_pvals[i])
+        temp_pvals = [((m - j + 1) * sorted_pvals[j][0], sorted_pvals[j][1]) for j in range(i+1)]
+        max_pvals = sorted(temp_pvals, key=lambda x: x[0], reverse=True)[0]
+        adjusted_pvals.append(max_pvals)
+
+    resorted_adjusted_pvals = [t[0] for t in sorted(adjusted_pvals, key=lambda x: x[1])]
+    print(resorted_adjusted_pvals)
+
     # Calculate significance differences following Holm's procedure
     significant_differences = [False] * (k - 1)
     thresholds = [0] * (k - 1)
@@ -103,6 +118,9 @@ def reference_difference(avg_ranks, n_datasets, significance_level=0.05):
         if pval > threshold and CD_threshold is None:
             CD_threshold = threshold
 
+    if CD_threshold is None:
+        CD_threshold = min(thresholds)
+
     # Calculate the critical difference from the first threshold that failed to
     # reject. This works because if the p-value would be below the threshold we
     # would consider it significantly different and above the threshold we
@@ -110,25 +128,25 @@ def reference_difference(avg_ranks, n_datasets, significance_level=0.05):
     CD = -1 * stats.norm.ppf(CD_threshold) / constant
 
     txt = [
-        "Number of datasets: %i" % N,
-        "Number of methods: %i" % k,
-        "Reference method: %s" % ref_method,
-        "Significance level: %g" % significance_level,
+        "Number of datasets: %i \n" % N,
+        "Number of methods: %i \n" % k,
+        "Reference method: %s \n" % ref_method,
+        "Significance level: %g \n" % significance_level,
         "",
-        "Reference method rank: %.6f" % avg_ranks[ref_method],
-        "Holm's procedure:",
+        "Reference method rank: %.6f \n" % avg_ranks[ref_method],
+        "Holm's procedure: \n",
     ]
 
     table = []
-    for o, p, t, s in zip(
-        others, P_values, thresholds, significant_differences
+    for o, p, t, s, a in zip(
+        others, P_values, thresholds, significant_differences, resorted_adjusted_pvals
     ):
-        table.append([o, avg_ranks[o], p, t, s])
+        table.append([o, avg_ranks[o], p, t, s, a])
 
     txt.append(
         tabulate(
             table,
-            headers=["Method", "Rank", "p-Value", "Threshold", "Significant"],
+            headers=["Method", "Rank", "p-Value", "Threshold", "Significant", "Adjusted p-value"],
         )
     )
 
@@ -161,14 +179,15 @@ def main():
         else:
             print("Fstat = %.2f, Fprob = %.2g" % (Fstat, Fprob))
     elif args.mode == "reference":
-        ref_method, CD, txt = reference_difference(avg_ranks, n_datasets)
+        ref_method, CD, txt = reference_difference(avg_ranks, n_datasets, significance_level=0.01)
         if args.output:
             outRef = args.output + "_ref.tex"
-            with open(outRef + "w") as fp:
-                fp.write(outRef + "%")
+            with open(outRef, "w") as fp:
+                for line in txt:
+                    fp.write(line)
             outCD = args.output + "_CD.tex"
-            with open(outCD + "w") as fp:
-                fp.write(outCD + "%")
+            with open(outCD, "w") as fp:
+                fp.write(str(CD))
         else:
             print("Reference method = %s, CD = %.2f" % (ref_method, CD))
             print("")

@@ -83,9 +83,9 @@ ngids_repetition = lambda: MixedIdsDataReader(f'data/ngids5/ngids_5_repetition_l
 
 three_ids2_data_reader = lambda: MixedIdsDataReader('data/3ids/3ids_3_order_1.npy', name='3ids3')
 three_ids_ordering = [lambda ordering=order: MixedIdsDataReader(f'data/3ids/3ids_3_order_{ordering}.npy', name=f'3ids3_order_{ordering}') for order in range(0, 5)]
-three_ids_kfold = [lambda ordering=order: MixedIdsDataReader(f'data/3ids/3ids_3_kfold_{ordering}.npy', name=f'3ids3_kfold_{ordering}') for order in range(0, 5)]
+three_ids_kfold = [lambda ordering=order: MixedIdsDataReader(f'data/3ids/3ids_3_kfold_{ordering}.npy', name=f'3ids3_kfold_{ordering}') for order in range(0, 1)]
 three_ids_memory = lambda: MixedIdsDataReader(f'data/3ids/3ids_3_kfold_0.npy', name=f'3ids3_kfold_memory')
-three_ids_repetition = lambda: MixedIdsDataReader(f'data/3ids/3ids_3_repetition_messed.npy', name=f'3ids3_repetition_long')
+three_ids_repetition = lambda: MixedIdsDataReader(f'data/3ids/3ids_3_repetition_long.npy', name=f'3ids3_repetition_long')
 
 smd_data_reader = lambda: SmdDataReader()
 credit_card_data_reader = lambda: CreditCardDataReader('data/creditcard/creditcard_50.npy', name='creditcard_50')
@@ -141,10 +141,10 @@ data_readers = [
     # *nslr_data_reader_kfold
     # three_ids_memory,
     # ngids_memory
-    # unsw_memory,
+    unsw_memory,
     # wind_memory,
     # nslr_memory,
-    three_ids_repetition,
+    # three_ids_repetition,
     # ngids_repetition,
     # unsw_repetition,
     # nslr_repetition,
@@ -158,7 +158,7 @@ models_creators = [
     # *wind_rel_wind_models()
     # *best_wind_competitors()
     # *best_3ids_competitors(),
-    *three_ids_models()
+    # *three_ids_models()
     # *best_energy_competitors()
     # *energy_pv_models()
     # *best_credit_card_competitors(),
@@ -168,7 +168,7 @@ models_creators = [
     # *best_nsl_competitors(),
     # *nsl_models()
     # *generate_memory_models(),
-    # *generate_unsw_memory_models(),
+    *generate_unsw_memory_models(),
     # *generate_3ids_memory_models(),
     # *generate_ngids_memory_models()
     # *wind_rel_wind_memory_models(),

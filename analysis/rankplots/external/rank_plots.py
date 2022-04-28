@@ -100,7 +100,7 @@ def make_rank_plot(
 
     n_datasets = len(all_ranks)
 
-    ref_method, CD, _ = reference_difference(avg_ranks, n_datasets)
+    ref_method, CD, _ = reference_difference(avg_ranks, n_datasets, significance_level=0.01)
 
     # we're going to insert the critical difference line after the dots
     # scope,·so we first have to figure out.tex where that is.

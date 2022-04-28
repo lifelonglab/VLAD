@@ -60,8 +60,10 @@ params = {
 best_model, best_value = {}, 0
 
 models_list = [
-    # 'suod', 'copod', 'if', 'lof',
-    'oc_svm',
+    # 'suod',
+    'copod',
+    # 'if', 'lof',
+    # 'oc_svm',
     # 'vae'
 ]
 
