@@ -18,6 +18,6 @@ def recompute_for_file(results_file):
 
 
 if __name__ == '__main__':
-    p = Path('/home/nyder/research/lifelong learning/lifelong-anomaly-detection/out/results')
+    p = Path('...')
     for f in p.rglob('**/*.json'):
         recompute_for_file(f)

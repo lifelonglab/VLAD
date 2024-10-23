@@ -20,5 +20,5 @@ def plot_curve_for(path):
         print(tpr)
 
 if __name__ == '__main__':
-    path = Path('/home/nyder/research/lifelong learning/lifelong-anomaly-detection/out/results/wind_rel_wind/IncrementalTaskLearner/')
+    path = Path('...')
     plot_curve_for(path)
